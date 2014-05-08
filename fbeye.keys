@@ -1,0 +1,14 @@
+f | add flare
+d | delete flare
+y | change type
+s | smooth lightcurve
+i | info
+b | zoom in (y axis)
+g | zoom out (y axis)
+l | y-zoom lock
+e | zoom in (x axis, time)
+w | zoom out (x axis, time)
+r | step back in time
+t | step forward in time
+q | quit and save
+= | reset display
