@@ -1,4 +1,4 @@
-pro fbeye,lightcurve,debug=debug,recalculate=recalculate,keyboard=keyboard,auto=auto;,error=error
+pro fbeye,lightcurve,debug=debug,recalculate=recalculate,keyboard=keyboard,auto=auto
  
 ;-----------------
 ; Flares By EYE
@@ -9,8 +9,8 @@ pro fbeye,lightcurve,debug=debug,recalculate=recalculate,keyboard=keyboard,auto=
 
 
 print,'> Welcome to FBeye...'
-;print,'  The available options are '
-;print,'    /error,  /keyboard'
+print,'  Note: setting /auto will disable interactive mode'
+print,'  '
 
 print,''
 
