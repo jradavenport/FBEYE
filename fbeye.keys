@@ -11,4 +11,4 @@ w | zoom out (x axis, time)
 r | step back in time
 t | step forward in time
 q | quit and save
-= | reset display
+~ | reset display
