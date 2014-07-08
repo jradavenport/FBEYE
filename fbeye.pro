@@ -179,16 +179,18 @@ flux_sm = flux - softserve(time,flux) + median(flux)
 ; run the simple jrad auto-find stuff
 ; it will save indicies that we'll want for later (pick)
 print,'> Auto flare finding...'
-pick = FBEYE_PICK(time,flux,lightcurve,$
-                  pflarestart, pflarestop,/corr) ; start/stop auto-find indx
+pick = FBEYE_PICK(time, flux, $ ; returns start/stop auto-find indx
+                  pflarestart, pflarestop,/corr) 
 
 if already_done eq 0 then begin
-FOR n=0L,n_elements(pflarestart)-1L DO BEGIN
-   FBEYE_ADDFLARE,time,flux,flux_sm,pflarestart[n],pflarestop[n],$
-                  fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,$
-                  lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,$
-                  multpos,filename=lightcurve+'.out'
-ENDFOR
+   IF pflarestart[0] ne -1 then begin
+      FOR n=0L,n_elements(pflarestart)-1L DO BEGIN
+         FBEYE_ADDFLARE,time,flux,flux_sm,pflarestart[n],pflarestop[n],$
+                        fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,$
+                        lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,$
+                        multpos,filename=lightcurve+'.out'
+      ENDFOR
+   ENDIF
 endif 
 print,'>'
 if keyword_set(auto) then return
@@ -307,7 +309,8 @@ plot,time-time0,flux,/xstyle,/ystyle,xrange=[t,t+dt],xtitle='Time ('+tunit[0]+')
 ; oplot jrad auto-suggested points
 ; these will always update with latest version of the auto-finder, no
 ; matter if you re-use previous results or not.
-oplot,time[pick]-time0,flux[pick],psym=4,color=166,symsize=0.5
+if pick[0] ne -1 then $
+   oplot,time[pick]-time0,flux[pick],psym=4,color=166,symsize=0.5
 
 
 ;==== plot a std dev bar on the side =====

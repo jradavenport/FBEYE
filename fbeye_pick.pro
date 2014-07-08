@@ -1,7 +1,7 @@
-function fbeye_pick, time, flux,path, fstart, fstop, fdur, kk=kk,corr=corr
-; my attempt at a fast auto flare finder
+function fbeye_pick, time, flux, fstart, fstop, fdur, kk=kk,corr=corr
+; a sorta fast auto flare finder
 ; FBEYE_PICK just returns the indicies that stand out as possible
-; flares when using the SOFTSERVE smoothing routine 
+; flares epochs when using the SOFTSERVE smoothing routine 
 
 compile_opt defint32, strictarr, strictarrsubs
 compile_opt HIDDEN
@@ -36,6 +36,13 @@ if not keyword_set(kk) then kk = 1.
 
   fdur = (fstop-fstart) + 1      ; index duration
 
+  IF total(fdur lt 2) eq n_elements(fdur) then begin
+     fstart = -1
+     fstop = -1
+     fdur = -1
+     print,'NO FLARES FOUND'
+     return,-1
+  ENDIF
 
   if total(fdur lt 2) gt 0 then $
      fbeye_remove,where(fdur lt 2),fstart,fstop,fdur
