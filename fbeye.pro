@@ -24,7 +24,6 @@ compile_opt defint32, strictarr, strictarrsubs
 
 if keyword_set(keyboard) then keyboard = 1 else keyboard = -1
 
-;== experimental:
 ;   auto-find the FBEYE path
 FBEYE_PATH = file_search(strsplit(!path,path_sep(/search),/extract),'fbeye.pro')
 FBEYE_PATH = strmid(fbeye_path,0,strpos(fbeye_path,'fbeye.pro'))
@@ -157,8 +156,13 @@ endif
 
 if keyword_set(debug) then print,'Debug: 4'
 ;== read in paramters file
-readcol,FBEYE_PATH+'fbeye.par',skipline=1,f='(a)',$
-        tunit,/silent
+;; readcol,FBEYE_PATH+'fbeye.par',skipline=1,f='(a)',$
+;;         tunit,/silent
+; removed file fbeye.par, which just contained these lines:
+;; tunit
+;; days
+
+tunit = 'days'
 
 print,''
 print,'> NOTE: Output files are being stored in:'
@@ -272,15 +276,15 @@ if xx0[0] ne -1 then begin
       if cplx_flg[xx0[ac[n]]] eq 1 then fclr=50
       loadct,0,/silent
       if cplx_flg[xx0[ac[n]]] eq 2 then begin
-         cubehelix,rot=1,start=2
+         cubehelix,/silent,rot=1,start=2
          fclr=65
       endif
       if cplx_flg[xx0[ac[n]]] eq 3 then begin
-         cubehelix,rot=1,start=3
+         cubehelix,/silent,rot=1,start=3
          fclr=65
       endif
       if cplx_flg[xx0[ac[n]]] eq 4 then begin
-         cubehelix,rot=1,start=1
+         cubehelix,/silent,rot=1,start=1
          fclr=65
       endif
 
@@ -633,11 +637,11 @@ if btn eq 30 then begin
 ;   polyfill,/normal,color=10,[.065,.2,.2,.065,.065],[.71,.71,.82,.82,.71]
    loadct,0,/silent
    polyfill,/normal,color=50,[.065,.2,.2,.065,.065],[.8,.8,.83,.83,.8]
-   cubehelix,rot=1,start=2
+   cubehelix,/silent,rot=1,start=2
    polyfill,/normal,color=65,[.065,.2,.2,.065,.065],[.77,.77,.8,.8,.77]
-   cubehelix,rot=1,start=3
+   cubehelix,/silent,rot=1,start=3
    polyfill,/normal,color=65,[.065,.2,.2,.065,.065],[.74,.74,.77,.77,.74]
-   cubehelix,rot=1,start=1
+   cubehelix,/silent,rot=1,start=1
    polyfill,/normal,color=65,[.065,.2,.2,.065,.065],[.71,.71,.74,.74,.71]
    loadct,39,/silent
    xyouts,.08,.81,'Classical (1)',/normal,charsize=1.2
