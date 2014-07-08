@@ -30,9 +30,7 @@ FBEYE_PATH = strmid(fbeye_path,0,strpos(fbeye_path,'fbeye.pro'))
 FBEYE_PATH = FBEYE_PATH[0]
 ;== this may not be the most efficient way to do this... oh well
 
-;;FBEYE_PATH = '/Users/james/idl/jrad/fbeye_master/'
-if keyword_set(debug) then print,'PATH = ',FBEYE_PATH
-
+;== open file w/ the keyboard shortcuts, which user can edit
 openr,lun,FBEYE_PATH+'fbeye.keys',/get_lun
 keynames = ''
 line=''
@@ -86,30 +84,21 @@ tlastviewed = -999.
 if keyword_set(debug) then print,'Debug: 3'
 doover = 'y'
 ; LOOK FOR THE OUTPUT ALREADY EXISTING...
-already_done = FILE_TEST(FBEYE_PATH+'tmp/'+lightcurve+'.out')
+already_done = FILE_TEST(lightcurve+'.out')
 if already_done eq 1 then print,'> ['+lightcurve+'] output files already exist.'
 if already_done eq 1 then read,doover,prompt='> Use existing results (y/n)? [default: y]  '
 if doover eq 'n' then already_done=0
 
-; temp file should be in FBEYE_PATH/tmp
+; temp file 
 if already_done eq 1 then begin
-   restore,FBEYE_PATH+'tmp/'+lightcurve+'.out'
-   ;;;if FILE_TEST(FBEYE_PATH+'tmp/'+lightcurve+'.auto') then restore,FBEYE_PATH+'tmp/'+lightcurve+'.auto' else no_auto=1
+   restore,lightcurve+'.out'
 endif
 
 
 ; IF NOT, RUN ; SAVE THIS OUTPUT
 if already_done eq 0 then begin
    print,''
-   ;; if keyword_set(auto) then begin
-   ;;    autodetect_flares,time,flux,finds,mined,duration
-   ;;    print,'> Running Hilton Auto-Detect Flares.'
-   ;;    print,'> This may take some time!'
-   ;;    print,''
-   ;;    save,filename=FBEYE_PATH+'tmp/'+lightcurve+'.auto',finds
-   ;; endif
-   ;if not keyword_set(auto) then $
-      finds={fstartpos:0d0,fstoppos:0d0,pstartpos:0d0,pstoppos:0d0}
+   finds={fstartpos:0d0,fstoppos:0d0,pstartpos:0d0,pstoppos:0d0}
 
 ; now convert the output in a useful format for FBeye
    fstartpos = finds.fstartpos
@@ -151,7 +140,7 @@ trise= fltarr(n_elements(fevent))
 tdecay= fltarr(n_elements(fevent)) 
 
 
-   save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=FBEYE_PATH+'tmp/'+lightcurve+'.out'
+   save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=lightcurve+'.out'
 endif
 
 if keyword_set(debug) then print,'Debug: 4'
@@ -164,11 +153,6 @@ if keyword_set(debug) then print,'Debug: 4'
 
 tunit = 'days'
 
-print,''
-print,'> NOTE: Output files are being stored in:'
-print,FBEYE_PATH+'tmp/'
-print,''
-
 
 ; reprocess stuff if requested
 ; this a good way to update data from prior version of FBeye
@@ -178,7 +162,7 @@ print,''
 if keyword_set(recalculate) then begin
    yn = 'n'
    read,yn,prompt='> Flare recalculation requested. Are you sure? (y/n) [default: n] '
-   if yn eq 'y' then FBEYE_RECALC,time,flux,FBEYE_PATH+'tmp/'+lightcurve+'.out'
+   if yn eq 'y' then FBEYE_RECALC,time,flux,lightcurve+'.out'
    if yn ne 'y' then print,'> Canceled'
    if yn eq 'y' then print,'  DONE! '
    print,'> Have a nice day.'
@@ -195,7 +179,7 @@ flux_sm = flux - softserve(time,flux) + median(flux)
 ; run the simple jrad auto-find stuff
 ; it will save indicies that we'll want for later (pick)
 print,'> Auto flare finding...'
-pick = FBEYE_PICK(time,flux,FBEYE_PATH+'tmp/'+lightcurve,$
+pick = FBEYE_PICK(time,flux,lightcurve,$
                   pflarestart, pflarestop,/corr) ; start/stop auto-find indx
 
 if already_done eq 0 then begin
@@ -203,7 +187,7 @@ FOR n=0L,n_elements(pflarestart)-1L DO BEGIN
    FBEYE_ADDFLARE,time,flux,flux_sm,pflarestart[n],pflarestop[n],$
                   fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,$
                   lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,$
-                  multpos,filename=FBEYE_PATH+'tmp/'+lightcurve+'.out'
+                  multpos,filename=lightcurve+'.out'
 ENDFOR
 endif 
 print,'>'
@@ -459,9 +443,9 @@ if btn eq 99 then begin
    tlastviewed = t
 ;   FBEYE_MSG,'Quit Selected. Have a nice day.'
    task = 1 ;this is how to quit
-   save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,tlastviewed,filename=FBEYE_PATH+'tmp/'+lightcurve+'.out'
+   save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,tlastviewed,filename=lightcurve+'.out'
    save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,tlastviewed,filename=lightcurve+'.sav'
-;   forprint,textout=lightcurve+'.tab',fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,/silent
+
 endif
 
 ; reset display
@@ -563,10 +547,10 @@ if btn eq 20 then begin
 
 ;now add to flare library for this star, so gets plotted each time
 ;  & save the flare library for this star
-   FBEYE_ADDFLARE,time,flux,flux_sm,ind0[0],ind1[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=FBEYE_PATH+'tmp/'+lightcurve+'.out'
+   FBEYE_ADDFLARE,time,flux,flux_sm,ind0[0],ind1[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=lightcurve+'.out'
 
-; refresh flare library - not a polite way to code this
-   restore,FBEYE_PATH+'tmp/'+lightcurve+'.out'
+; refresh flare library - not a polite way to code this...
+   restore,lightcurve+'.out'
 endif
 
 ; DELETE FLARE ----
@@ -577,7 +561,7 @@ if btn eq 21 then begin
    if f0 lt t then continue
    if f0 gt t+dt then continue
    ind = where(abs(time-min(time,/nan) -f0) eq min(abs(time-min(time,/nan) -f0),/nan))   
-   FBEYE_DELFLARE,ind[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=FBEYE_PATH+'tmp/'+lightcurve+'.out'
+   FBEYE_DELFLARE,ind[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=lightcurve+'.out'
 endif
 
 ; + MULT PEAK -----
@@ -602,9 +586,9 @@ if btn eq 70 then begin
 
 ;now add to flare library for this star, so gets plotted each time
 ;  & save the flare library for this star
-   FBEYE_ADDMULT,ind0[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=FBEYE_PATH+'tmp/'+lightcurve+'.out'
+   FBEYE_ADDMULT,ind0[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=lightcurve+'.out'
 ; refresh flare library - not a polite way to code this
-   restore,FBEYE_PATH+'tmp/'+lightcurve+'.out'
+   restore,lightcurve+'.out'
 endif
 
 ; - MULT PEAK -----
@@ -615,7 +599,7 @@ if btn eq 71 then begin
    if f0 lt t then continue
    if f0 gt t+dt then continue
    ind = where(abs(time-min(time,/nan) -f0) eq min(abs(time-min(time,/nan) -f0),/nan))
-   FBEYE_DELMULT,ind[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=FBEYE_PATH+'tmp/'+lightcurve+'.out'
+   FBEYE_DELMULT,ind[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=lightcurve+'.out'
 endif
 
 ;--- flare event info ----
@@ -626,7 +610,7 @@ if btn eq 411 then begin
    if f0 lt t then continue
    if f0 gt t+dt then continue
    ind = where(abs(time-min(time,/nan) -f0) eq min(abs(time-min(time,/nan) -f0),/nan))
-   FBEYE_INFO,ind[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos;,filename=FBEYE_PATH+'tmp/'+lightcurve+'.out'
+   FBEYE_INFO,ind[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos
 endif
 
 ;--- TYPE -------
@@ -711,7 +695,7 @@ if btn eq 30 then begin
    if f1 gt t+dt then continue
    ind = where(abs(time-min(time,/nan) -f1) eq min(abs(time-min(time,/nan) -f1),/nan))
    
-   FBEYE_TYPE,ind[0],tmpflg,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=FBEYE_PATH+'tmp/'+lightcurve+'.out'
+   FBEYE_TYPE,ind[0],tmpflg,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=lightcurve+'.out'
 endif
 
 ;
@@ -733,11 +717,6 @@ if xx0[0] gt -1 then begin
    close,4
    print,'> OUTPUT being saved to local text file'
 endif
-
-;; print,''
-;; print,'> NOTE: Output save files were stored in:'
-;; print,FBEYE_PATH+'tmp/*.out'
-;; print,''
 
 
 return

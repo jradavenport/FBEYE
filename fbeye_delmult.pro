@@ -1,5 +1,5 @@
 pro fbeye_delmult,f0,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=filename
-;FBEYE_PATH+'tmp/'+lightcurve+'.out'
+
 compile_opt defint32, strictarr, strictarrsubs
 compile_opt HIDDEN
 
