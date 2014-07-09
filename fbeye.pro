@@ -1,4 +1,5 @@
-pro fbeye,lightcurve,debug=debug,recalculate=recalculate,keyboard=keyboard,auto=auto
+pro fbeye,lightcurve,debug=debug,recalculate=recalculate,$
+          keyboard=keyboard,auto=auto,noauto=noauto
  
 ;-----------------
 ; Flares By EYE
@@ -10,9 +11,8 @@ pro fbeye,lightcurve,debug=debug,recalculate=recalculate,keyboard=keyboard,auto=
 
 print,'> Welcome to FBeye...'
 print,'  Note: setting /auto will disable interactive mode'
+print,'        setting /noauto will disable all auto-finding'
 print,'  '
-
-print,''
 
 device, retain = 2
 device, true_color = 24
@@ -78,7 +78,7 @@ print,'> Reading the Lightcurve file: '+lightcurve
 readcol,lightcurve,/silent,f='(D,D,D)',time,flux,error
 
 
-tlastviewed = -999.
+tlastviewed = -999. ; a time value that shouldn't exist
 
 ;1) 
 if keyword_set(debug) then print,'Debug: 3'
@@ -178,29 +178,39 @@ flux_sm = flux - softserve(time,flux) + median(flux)
 
 ; run the simple jrad auto-find stuff
 ; it will save indicies that we'll want for later (pick)
-print,'> Auto flare finding...'
-pick = FBEYE_PICK(time, flux, $ ; returns start/stop auto-find indx
-                  pflarestart, pflarestop,/corr) 
+if not keyword_set(noauto) then begin
+   print,'> Auto flare finding...'
+   pick = FBEYE_PICK(time, flux, $ ; returns start/stop auto-find indx
+                     pflarestart, pflarestop,/corr) 
+   
+   if already_done eq 0 then begin
+      IF pflarestart[0] ne -1 then begin
+         FOR n=0L,n_elements(pflarestart)-1L DO BEGIN
+            FBEYE_ADDFLARE,time,flux,flux_sm,pflarestart[n],pflarestop[n],$
+                           fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,$
+                           lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,$
+                           multpos,filename=lightcurve+'.out'
+         ENDFOR
+      ENDIF
+   endif
+   print,'>'
+   if keyword_set(auto) then return
+endif
 
-if already_done eq 0 then begin
-   IF pflarestart[0] ne -1 then begin
-      FOR n=0L,n_elements(pflarestart)-1L DO BEGIN
-         FBEYE_ADDFLARE,time,flux,flux_sm,pflarestart[n],pflarestop[n],$
-                        fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,$
-                        lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,$
-                        multpos,filename=lightcurve+'.out'
-      ENDFOR
-   ENDIF
-endif 
-print,'>'
-if keyword_set(auto) then return
+if keyword_set(noauto) then begin
+   print,'> Skipping Auto-find...'
+   pick = -1
+   pflarestart = -1
+   pflarestop = -1
+endif
 
-VERSION = 'v1.1'
+VERSION = 'v1.1.1'
 ;=========
 ;set up the graphics window, and plot settings
 loadct,39,/silent
 !p.charsize=1.2
 set_plot,'X'
+!p.font = -1
 window,0,xsize=1000,ysize=600,title='FBeye '+VERSION
 
 ;=========
