@@ -211,7 +211,7 @@ loadct,39,/silent
 !p.charsize=1.2
 set_plot,'X'
 !p.font = -1
-window,0,xsize=1000,ysize=600,title='FBeye '+VERSION
+window,0,xsize=1200,ysize=700,title='FBeye '+VERSION
 
 ;=========
 
@@ -449,7 +449,10 @@ if keyword_set(debug) then print,'Debug: btn=',btn
 
 ;FBEYE_MSG,string(btn)
 
-if btn eq 777 then keyboard = 1
+if btn eq 777 then begin $
+   keyboard = 1
+;print key names?
+endif
 
 if btn eq 99 then begin
    print,'> Quit Selected. Have a nice day.'
