@@ -141,6 +141,7 @@ tdecay= fltarr(n_elements(fevent))
 
 
    save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=lightcurve+'.out'
+   spawn,'chmod 777 '+lightcurve+'.out'
 endif
 
 if keyword_set(debug) then print,'Debug: 4'
@@ -462,6 +463,9 @@ if btn eq 99 then begin
    save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,tlastviewed,filename=lightcurve+'.out'
    save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,tlastviewed,filename=lightcurve+'.sav'
 
+   spawn,'chmod 777 '+lightcurve+'.out'
+   spawn,'chmod 777 '+lightcurve+'.sav'
+
 endif
 
 ; reset display
@@ -732,6 +736,8 @@ if xx0[0] gt -1 then begin
    for n=0L,n_elements(fevent)-1 do printf,4,fevent[n],fstartpos[n],fstoppos[n],tpeak[n],tstart[n],tstop[n],trise[n],tdecay[n],lpeak[n],ed[n],cplx_flg[n],mltpk_flg[n],mltpk_num[n],tmltpk[n],lmltpk[n],multpos[n],f='(i,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,"  ;")'
    close,4
    print,'> OUTPUT being saved to local text file'
+   spawn,'chmod 777 '+lightcurve+'.fbeye'
+
 endif
 
 
