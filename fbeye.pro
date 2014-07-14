@@ -78,7 +78,8 @@ print,'> Reading the Lightcurve file: '+lightcurve
 readcol,lightcurve,/silent,f='(D,D,D)',time,flux,error
 
 
-tlastviewed = -999. ; a time value that shouldn't exist
+tlastviewed = -9d9 ; a time value that shouldn't exist
+dtlast = -9d9 ; a time bin that shouldn't exist
 
 ;1) 
 if keyword_set(debug) then print,'Debug: 3'
@@ -221,7 +222,7 @@ time0=min(time,/nan)
 maxtime=max(time,/nan)
 lock=0
 ylock = 0 ; lock to fix the yzoom
-dt = 0.5 ; days
+if dtlast gt 0 then dt = dtlast else dt = 0.5 ; days
 if time[1]-time[0] gt dt then dt = (time[1]-time[0]) * 10.
 t=0 ; start time to view
 ;-- update if looked at previously
@@ -458,10 +459,11 @@ endif
 if btn eq 99 then begin
    print,'> Quit Selected. Have a nice day.'
    tlastviewed = t
+   dtlast = dt
 ;   FBEYE_MSG,'Quit Selected. Have a nice day.'
    task = 1 ;this is how to quit
-   save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,tlastviewed,filename=lightcurve+'.out'
-   save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,tlastviewed,filename=lightcurve+'.sav'
+   save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,tlastviewed,dtlast,filename=lightcurve+'.out'
+   save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,tlastviewed,dtlast,filename=lightcurve+'.sav'
 
    spawn,'chmod 777 '+lightcurve+'.out'
    spawn,'chmod 777 '+lightcurve+'.sav'
