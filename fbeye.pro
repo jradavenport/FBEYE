@@ -206,7 +206,7 @@ if keyword_set(noauto) then begin
    pflarestop = -1
 endif
 
-VERSION = 'v1.1.1'
+VERSION = 'v1.1.2'
 ;=========
 ;set up the graphics window, and plot settings
 loadct,39,/silent
@@ -222,7 +222,10 @@ time0=min(time,/nan)
 maxtime=max(time,/nan)
 lock=0
 ylock = 0 ; lock to fix the yzoom
-if dtlast gt 0 then dt = dtlast else dt = 0.5 ; days
+if dtlast gt 0 then dt = dtlast else begin
+   if median(time[1:*]-time) ge 0.01 then dt = 1.5 ; days
+   if median(time[1:*]-time) lt 0.01 then dt = 0.5
+endelse
 
 if time[1]-time[0] gt dt then dt = (time[1]-time[0]) * 10.
 t=0 ; start time to view
