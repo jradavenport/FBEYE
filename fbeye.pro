@@ -85,7 +85,7 @@ dtlast = -9d9 ; a time bin that shouldn't exist
 if keyword_set(debug) then print,'Debug: 3'
 doover = 'y'
 ; LOOK FOR THE OUTPUT ALREADY EXISTING...
-already_done = FILE_TEST(lightcurve+'.out')
+already_done = FILE_TEST(lightcurve+'.out',GET_MODE=out_per,/USER)
 if already_done eq 1 then print,'> ['+lightcurve+'] output files already exist.'
 if already_done eq 1 then read,doover,prompt='> Use existing results (y/n)? [default: y]  '
 if doover eq 'n' then already_done=0
@@ -142,7 +142,8 @@ tdecay= fltarr(n_elements(fevent))
 
 
    save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=lightcurve+'.out'
-   spawn,'chmod 777 '+lightcurve+'.out'
+;   spawn,'chmod 777 '+lightcurve+'.out'
+   FILE_CHMOD,lightcurve+'.out', '777'o
 endif
 
 if keyword_set(debug) then print,'Debug: 4'
@@ -469,8 +470,10 @@ if btn eq 99 then begin
    save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,tlastviewed,dtlast,filename=lightcurve+'.out'
    save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,tlastviewed,dtlast,filename=lightcurve+'.sav'
 
-   spawn,'chmod 777 '+lightcurve+'.out'
-   spawn,'chmod 777 '+lightcurve+'.sav'
+   ;; spawn,'chmod 777 '+lightcurve+'.out'
+   ;; spawn,'chmod 777 '+lightcurve+'.sav'
+   FILE_CHMOD,lightcurve+'.out', '777'o
+   FILE_CHMOD,lightcurve+'.sav', '777'o
 
 endif
 
@@ -753,8 +756,8 @@ if xx0[0] gt -1 then begin
    for n=0L,n_elements(fevent)-1 do printf,4,fevent[n],fstartpos[n],fstoppos[n],tpeak[n],tstart[n],tstop[n],trise[n],tdecay[n],lpeak[n],ed[n],cplx_flg[n],mltpk_flg[n],mltpk_num[n],tmltpk[n],lmltpk[n],multpos[n],f='(i,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,"  ;")'
    close,4
    print,'> OUTPUT being saved to local text file'
-   spawn,'chmod 777 '+lightcurve+'.fbeye'
-
+;;    spawn,'chmod 777 '+lightcurve+'.fbeye'
+   FILE_CHMOD,lightcurve+'.fbeye', '777'o
 endif
 
 
