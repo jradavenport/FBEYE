@@ -657,7 +657,7 @@ endif
 if btn eq 30 then begin 
 ; we'll use the cplx_flg to hold the "type"
    FBEYE_MSG,'Choose Type'
-   xyouts,.01,.77,'Type ('+keynames[2]+')',/normal,color=90
+   xyouts,.007,.77,'Type ('+keynames[2]+')',/normal,color=90
 ;   polyfill,/normal,color=10,[.065,.2,.2,.065,.065],[.71,.71,.82,.82,.71]
    loadct,0,/silent
    polyfill,/normal,color=50,[.065,.2,.2,.065,.065],[.8,.8,.83,.83,.8]
@@ -753,7 +753,13 @@ if xx0[0] gt -1 then begin
    close,/all
    openw,4,lightcurve+'.fbeye'
 
-   for n=0L,n_elements(fevent)-1 do printf,4,fevent[n],fstartpos[n],fstoppos[n],tpeak[n],tstart[n],tstop[n],trise[n],tdecay[n],lpeak[n],ed[n],cplx_flg[n],mltpk_flg[n],mltpk_num[n],tmltpk[n],lmltpk[n],multpos[n],f='(i,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,"  ;")'
+   for n=0L,n_elements(fevent)-1 do $
+      printf,4,fevent[n],fstartpos[n],fstoppos[n],$
+             tpeak[n],tstart[n],tstop[n],$
+             trise[n],tdecay[n],lpeak[n],ed[n],$
+             cplx_flg[n],mltpk_flg[n],mltpk_num[n],$
+             tmltpk[n],lmltpk[n],multpos[n],$
+             f='(i,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,"  ;")'
    close,4
    print,'> OUTPUT being saved to local text file'
 ;;    spawn,'chmod 777 '+lightcurve+'.fbeye'
