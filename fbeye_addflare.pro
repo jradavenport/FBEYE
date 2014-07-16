@@ -1,4 +1,4 @@
-pro FBEYE_ADDFLARE,time,flux,flux_sm,f0,f1,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=filename
+pro FBEYE_ADDFLARE,time,flux,flux_sm,f0,f1,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=filename,noauto=noauto
 
 compile_opt defint32, strictarr, strictarrsubs
 compile_opt HIDDEN
@@ -18,7 +18,9 @@ compile_opt HIDDEN
 tmpstat = FBEYE_FLARESTAT(time,flux,flux_sm,f0,f1)
 
 ; automatically (simply) pick a flare type
-newtype = FBEYE_AUTOTYPE(time,flux_sm,f0,f1) 
+newtype = 1
+if not keyword_set(noauto) then $
+   newtype = FBEYE_AUTOTYPE(time,flux_sm,f0,f1) 
 
 cplx_flg=[cplx_flg,newtype]            ; flag for flare type
 

@@ -195,10 +195,10 @@ if not keyword_set(noauto) then begin
                            multpos,filename=lightcurve+'.out'
          ENDFOR
       ENDIF
-   endif
+   endif ; /already_done
    print,'>'
    if keyword_set(auto) then return
-endif
+endif ; /noauto
 
 if keyword_set(noauto) then begin
    print,'> Skipping Auto-find...'
@@ -587,7 +587,7 @@ if btn eq 20 then begin
 
 ;now add to flare library for this star, so gets plotted each time
 ;  & save the flare library for this star
-   FBEYE_ADDFLARE,time,flux,flux_sm,ind0,ind1,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=lightcurve+'.out'
+   FBEYE_ADDFLARE,time,flux,flux_sm,ind0,ind1,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=lightcurve+'.out',noauto=noauto
 
 ; refresh flare library - not a polite way to code this...
    restore,lightcurve+'.out'
