@@ -20,8 +20,10 @@ if keyword_set(flat) then begin
 endif
 
 
-if total(t.sap_quality gt 0) gt 0 then $
-   fbeye_remove,where(t.sap_quality gt 0),time,flux,err
+;-- remove this flag cut, as it's wrong!
+;; if total(t.sap_quality gt 0) gt 0 then $
+;;    fbeye_remove,where(t.sap_quality gt 0),time,flux,err
+
 if total(err lt -1) gt 0 then $
    fbeye_remove,where(err lt -1),time,flux,err
 
