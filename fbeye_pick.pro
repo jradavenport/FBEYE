@@ -1,16 +1,19 @@
-function fbeye_pick, time, flux, fstart, fstop, fdur, kk=kk,corr=corr
+function fbeye_pick, time, flux, fstart, fstop, fdur, kk=kk,corr=corr,$
+                     fsmooth=fsmooth
 ; a sorta fast auto flare finder
 ; FBEYE_PICK just returns the indicies that stand out as possible
 ; flares epochs when using the SOFTSERVE smoothing routine 
 
-compile_opt defint32, strictarr, strictarrsubs
-compile_opt HIDDEN
+  compile_opt defint32, strictarr, strictarrsubs
+  compile_opt HIDDEN
 
-if not keyword_set(kk) then kk = 1.
-
-
-   yya = abs(flux-softserve(time,flux,kk))
-   yyb =(softserve(time,flux,kk))
+  if not keyword_set(kk) then kk = 1.
+  
+  if not keyword_set(fsmooth) then $
+     fsmooth = softserve(time,flux,kk)
+  
+  yya = abs(flux-fsmooth)
+  yyb =(fsmooth)
 
   myy = median(yya)
 
