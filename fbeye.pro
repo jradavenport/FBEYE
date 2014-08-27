@@ -10,8 +10,10 @@ pro fbeye,lightcurve,debug=debug,recalculate=recalculate,$
 
 
 print,'> Welcome to FBeye...'
-print,'  Note: setting /auto will disable interactive mode'
-print,'        setting /noauto will disable all auto-finding'
+print,' Note: Setting /auto will disable interactive mode.'
+print,'       Setting /noauto will disable all auto-finding.'
+print,'       Setting /recalculate will use prev start/stop times '
+print,'         and recompute the Equiv. Durations, etc.'
 print,'  '
 
 device, retain = 2
