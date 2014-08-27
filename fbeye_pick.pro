@@ -1,4 +1,4 @@
-function fbeye_pick, time, flux, fstart, fstop, fdur, kk=kk,corr=corr,$
+function fbeye_pick, time, flux, error, fstart, fstop, fdur, kk=kk,corr=corr,$
                      fsmooth=fsmooth
 ; a sorta fast auto flare finder
 ; FBEYE_PICK just returns the indicies that stand out as possible
@@ -15,16 +15,14 @@ function fbeye_pick, time, flux, fstart, fstop, fdur, kk=kk,corr=corr,$
   yya = abs(flux-fsmooth)
   yyb =(fsmooth)
 
-  myy = median(yya)
+  myy = median(yya) ; median absolute residual
 
-;--- doing it this way would only pick 1 point for each flare
-;  ok = where(yya gt 2.5d0*myy and flux gt yyb)
-;  dind = ok[1:*]-ok
-;  pick = ok[where(dind gt 1)] 
 
 ;-- here's the arbitrary selection criteria, chosen by trial/error
 ;   selects all points above the smoothed threshold
-  pick = where(yya gt 2.5d0*myy and flux gt yyb)
+  pick = where(yya gt 2.5d0*myy and $
+               flux gt yyb and $
+               flux gt 2.5d0*error+yyb)
 
   fl_d = pick[1:*]-pick
 ; make flares have to be separated by more than 1 epoch

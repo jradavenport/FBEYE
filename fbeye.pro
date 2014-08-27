@@ -182,7 +182,7 @@ print,' ...'
 fsmooth = softserve(time,flux)
 flux_sm = flux - fsmooth + median(flux)
 
-VERSION = 'v1.1.3'
+VERSION = 'v1.1.4'
 
 ;-- force errors >= 0
 if total(error le 0) gt 0 then $
