@@ -30,11 +30,6 @@ function fbeye_pick, time, flux, error, fstart, fstop, fdur, kk=kk,corr=corr,$
   fstop = pick[where([fl_d,3] gt 2)]
 
 
-
-  ;; sind = where(fl_d gt 1)  
-  ;; fstop = pick[[sind,max(pick)]] ; stop time indices
-  ;; fstart = pick[[0,sind+1]]      ; start time indicies
-
   fdur = (fstop-fstart) + 1      ; index duration
 
   IF total(fdur lt 2) eq n_elements(fdur) then begin
