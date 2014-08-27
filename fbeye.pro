@@ -266,12 +266,12 @@ if keyword_set(debug) then print,'Debug: yrange=',yrng
 
 plot,time-time0,flux,/xstyle,/ystyle,xrange=[t,t+dt],$
      xtitle='Time ('+tunit[0]+')',$
-     position=posgen(1,1,1,xsp=-.85),ytitle='Flux',ytickn=replicate(' ',8),$
-     psym=10,yrange=[ yrng ],/nodata
+     position=posgen(1,1,1,xsp=-.85),ytickn=replicate(' ',8),$
+     psym=10,yrange=[ yrng ],/nodata;,ytitle='Flux'
 
 if keyword_set(error) then begin
    loadct,0,/silent
-   ploterror,time-time0,flux,error,/xstyle,/ystyle,xrange=[t,t+dt],xtitle='Time ('+tunit[0]+')', position=posgen(1,1,1,xsp=-.85),ytitle='Flux',ytickn=replicate(' ',8),psym=10,yrange=[ yrng ],/noerase,/nohat,errcolor=65
+   ploterror,time-time0,flux,error,/xstyle,/ystyle,xrange=[t,t+dt],xtitle='Time ('+tunit[0]+')', position=posgen(1,1,1,xsp=-.85),ytickn=replicate(' ',8),psym=10,yrange=[ yrng ],/noerase,/nohat,errcolor=65;,ytitle='Flux'
    loadct,39,/silent
 endif
 
@@ -328,16 +328,16 @@ if xx[0] ne -1 then for n=0L,n_elements(xx)-1 do $
    oplot,[time[multpos[xx[n]]],time[multpos[xx[n]]]]-time0,[yrng],color=114,linestyle=2,thick=.8
 
 
-;==== oplot LC again =====
-;if not keyword_set(error) then 
-plot,time-time0,flux,/xstyle,/ystyle,xrange=[t,t+dt],xtitle='Time ('+tunit[0]+')', position=posgen(1,1,1,xsp=-.85),ytitle='Flux',ytickn=replicate(' ',8),psym=10,yrange=[ yrng ],/noerase,title='FILE: '+lightcurve
+;==== oplot LC again to put on top =====
+plot,time-time0,flux,/xstyle,/ystyle,xrange=[t,t+dt],xtitle='Time ('+tunit[0]+')', position=posgen(1,1,1,xsp=-.85),psym=10,yrange=[ yrng ],/noerase,title='FILE: '+lightcurve;,ytickn=replicate(' ',8),ytitle='Flux'
 
+xyouts,/norm,0.24,0.94,'Flux'
 
 ; oplot jrad auto-suggested points
 ; these will always update with latest version of the auto-finder, no
 ; matter if you re-use previous results or not.
 if pick[0] ne -1 then $
-   oplot,time[pick]-time0,flux[pick],psym=4,color=166,symsize=0.5
+   oplot,time[pick]-time0,flux[pick],psym=4,color=170,symsize=0.5,thick=1.5
 
 
 ;==== plot a std dev bar on the side =====
