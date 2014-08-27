@@ -142,6 +142,7 @@ tdecay= fltarr(n_elements(fevent))
    save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=lightcurve+'.out'
 
 ;   spawn,'chmod 777 '+lightcurve+'.out'
+;   if FILE_TEST(lightcurve) eq 0 then
    FILE_CHMOD,lightcurve+'.out', '777'o
 endif
 
