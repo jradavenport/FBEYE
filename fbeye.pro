@@ -184,12 +184,15 @@ flux_sm = flux - fsmooth + median(flux)
 
 VERSION = 'v1.1.3'
 
+;-- force errors >= 0
+if total(error le 0) gt 0 then $
+   error[where(error le 0)] = 1.0
 
 ; run the simple jrad auto-find stuff
 ; it will save indicies that we'll want for later (pick)
 if not keyword_set(noauto) then begin
    print,'> Auto flare finding...'
-   pick = FBEYE_PICK(time, flux, $ ; returns start/stop auto-find indx
+   pick = FBEYE_PICK(time, flux, error, $ ; returns start/stop auto-find indx
                      pflarestart, pflarestop,/corr,fsmooth=fsmooth) 
    
    if already_done eq 0 then begin
