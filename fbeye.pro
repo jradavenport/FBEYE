@@ -82,7 +82,11 @@ dtlast = -9d9 ; a time bin that shouldn't exist
 if keyword_set(debug) then print,'Debug: 3'
 doover = 'y'
 ; LOOK FOR THE OUTPUT ALREADY EXISTING...
-already_done = FILE_TEST(lightcurve+'.out',GET_MODE=out_per,/USER)
+already_done = FILE_TEST(lightcurve+'.out')
+already_own = FILE_TEST(lightcurve+'.out',GET_MODE=out_per,/USER)
+if keyword_set(debug) then print, 'already_done = ',already_done
+if keyword_set(debug) then print, 'out_per=',out_per
+
 if already_done eq 1 then print,'> ['+lightcurve+'] output files already exist.'
 if already_done eq 1 then read,doover,prompt='> Use existing results (y/n)? [default: y]  '
 if doover eq 'n' then already_done=0
@@ -475,7 +479,9 @@ if btn eq 99 then begin
 
    ;; spawn,'chmod 777 '+lightcurve+'.out'
    ;; spawn,'chmod 777 '+lightcurve+'.sav'
-   FILE_CHMOD,lightcurve+'.out', '777'o
+   already_own = FILE_TEST(lightcurve+'.out',GET_MODE=out_per,/USER)
+   if already_own eq 1 then $
+      FILE_CHMOD,lightcurve+'.out', '777'o
    ;; FILE_CHMOD,lightcurve+'.sav', '777'
 
 endif
