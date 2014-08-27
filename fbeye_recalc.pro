@@ -1,4 +1,4 @@
-pro fbeye_recalc,time,flux,outfilename
+pro fbeye_recalc,time,flux,fsmooth,outfilename
 
 compile_opt defint32, strictarr, strictarrsubs
 compile_opt HIDDEN
@@ -21,6 +21,7 @@ lpeak=0
 ed=0
 
 x = where(fevent gt 0)
+
 FOR n=0L,n_elements(x)-1 DO BEGIN
    ; fevent = same
    ; fstartpos = same
@@ -40,7 +41,7 @@ FOR n=0L,n_elements(x)-1 DO BEGIN
    fstoppos = [fstoppos, fstoptmp]
 
    ;; tmpstat = FBEYE_FLARESTAT(time,flux,fstartpos[x[n[0]]],fstoppos[x[n[0]]])
-   tmpstat = FBEYE_FLARESTAT(time,flux, fstarttmp, fstoptmp)   
+   tmpstat = FBEYE_FLARESTAT(time,flux, fsmooth, fstarttmp, fstoptmp)   
 
    tpeak=[tpeak, tmpstat[1]]  
    trise=[trise, tmpstat[1]-time[fstarttmp]]

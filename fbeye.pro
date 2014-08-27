@@ -162,6 +162,11 @@ if keyword_set(debug) then print,'Debug: 4'
 
 tunit = 'days'
 
+print,'> Storing smooth lightcurve'
+print,' ...'
+fsmooth = softserve(time,flux)
+flux_sm = flux - fsmooth + median(flux)
+
 
 ; reprocess stuff if requested
 ; this a good way to update data from prior version of FBeye
@@ -170,19 +175,15 @@ tunit = 'days'
 ; preserves flags, etc, if set
 if keyword_set(recalculate) then begin
    yn = 'n'
-   read,yn,prompt='> Flare recalculation requested. Are you sure? (y/n) [default: n] '
-   if yn eq 'y' then FBEYE_RECALC,time,flux,lightcurve+'.out'
+   print,'Flare recalculation requested. This cannot be undone!'
+   read,yn,prompt='>  Are you sure? (y/n) [default: n] '
+   if yn eq 'y' then FBEYE_RECALC,time,flux,fsmooth,lightcurve+'.out'
    if yn ne 'y' then print,'> Canceled'
    if yn eq 'y' then print,'  DONE! '
    print,'> Have a nice day.'
    RETURN ;<<<< done with program
 endif
 
-
-print,'> Storing smooth lightcurve'
-print,' ...'
-fsmooth = softserve(time,flux)
-flux_sm = flux - fsmooth + median(flux)
 
 VERSION = 'v1.1.4'
 
