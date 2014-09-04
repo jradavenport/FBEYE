@@ -50,7 +50,7 @@ FOR n=0L,n_elements(x)-1 DO BEGIN
    ed=[ed,tmpstat[0]]   
 ENDFOR
 fbeye_remove,0,tpeak,tstart,tstop,trise,tdecay
-remove,0,lpeak,ed
+fbeye_remove,0,lpeak,ed
 
 if n_elements(cplx_flg) eq 0 then cplx_flg=intarr(n_elements(fevent))
 if n_elements(mltpk_flg) eq 0 then mltpk_flg=intarr(n_elements(fevent))
