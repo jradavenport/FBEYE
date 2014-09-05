@@ -168,6 +168,9 @@ fsmooth = softserve(time,flux)
 flux_sm = flux - fsmooth + median(flux)
 
 
+VERSION = 'v1.1.4'
+
+
 ; reprocess stuff if requested
 ; this a good way to update data from prior version of FBeye
 ; assumes only the time,flux,start/stop index
@@ -181,11 +184,11 @@ if keyword_set(recalculate) then begin
    if yn ne 'y' then print,'> Canceled'
    if yn eq 'y' then print,'  DONE! '
    print,'> Have a nice day.'
-   RETURN ;<<<< done with program
+   goto,theend
+;   RETURN ;<<<< done with program
 endif
 
 
-VERSION = 'v1.1.4'
 
 ;-- force errors >= 0
 if total(error le 0) gt 0 then $
@@ -765,8 +768,9 @@ wdelete,!D.WINDOW
 theend: print,'> Writing output .fbeye file'
 
 xx0 = where(fstartpos gt 0)
-  
 close,/all
+
+
 openw,4,lightcurve+'.fbeye'
                                 ; print a header line
 printf,4,'#'
