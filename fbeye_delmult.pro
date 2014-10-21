@@ -1,4 +1,4 @@
-pro fbeye_delmult,f0,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=filename
+pro fbeye_delmult,f0,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,filename=filename
 
 compile_opt defint32, strictarr, strictarrsubs
 compile_opt HIDDEN
@@ -30,10 +30,11 @@ compile_opt HIDDEN
   fbeye_remove,overmult,fevent,fstartpos,fstoppos,tpeak
   fbeye_remove,overmult,lpeak,ed,cplx_flg,multpos
   fbeye_remove,overmult,mltpk_flg,mltpk_num,tmltpk,lmltpk
+  fbeye_remove,s2n
   fbeye_remove,overmult,tstart,tstop,trise,tdecay ; << NEW
 
 ; save new structure
-save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=filename
+save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,filename=filename
 
 return
 end

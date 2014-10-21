@@ -1,4 +1,4 @@
-pro FBEYE_ADDFLARE,time,flux,flux_sm,f0,f1,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=filename,noauto=noauto
+pro FBEYE_ADDFLARE,time,flux,flux_sm,f0,f1,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,filename=filename,noauto=noauto
 
 compile_opt defint32, strictarr, strictarrsubs
 compile_opt HIDDEN
@@ -35,6 +35,8 @@ trise=[trise,tmpstat[1]-time[f0[0]]]   ; << NEW
 tdecay=[tdecay,time[f1[0]]-tmpstat[1]] ; << NEW
 lpeak=[lpeak,tmpstat[2]]               ; max luminosity (peak)
 ed=[ed,tmpstat[0]]                     ; equivalent duration
+s2n = [s2n,tmpstat[3]]                 ; signal to noise ratio
+
 ;cplx_flg=[cplx_flg,0]                  ; flag for flare type
 
 mltpk_flg=[mltpk_flg,0]                ; flag for multi-peak
@@ -45,7 +47,7 @@ multpos=[multpos,0]                    ; index of mult-peak
 
 
 ; save new structure
-save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=filename
+save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,filename=filename
 
 
 return

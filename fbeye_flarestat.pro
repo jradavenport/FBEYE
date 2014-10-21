@@ -39,6 +39,12 @@ fit =[inter,slope]
 flux_n = (flux - poly(time, fit)) / median(flux[[c1,c2]])
 ed = TSUM(time[f0:f1]*864000d0, flux_n[f0:f1])
 
+
+;-- compute the s2n
+std = stddev(flux[[c1,c2]]) / median(flux[[c1,c2]])
+s2n = ed / sqrt(ed + std)
+
+
 ;; plot,time,flux,xrange=[time[f0[0]]-dur,time[f1[0]]+dur],/xsty,/ysty
 ;; oplot,psym=6,symsize=4,thick=5, [median(time[c1]),median(time[c2])],[median(flux[c1]),median(flux[c2])]
 ;; oplot,time,poly(time,fit)
@@ -50,6 +56,6 @@ lpeak = max(flux[f0:f1], peak_ind, /nan)
 tpeak = time[f0 + peak_ind]
 
 ;-- return the answers
-outstat = [ed, tpeak, lpeak]
+outstat = [ed, tpeak, lpeak, s2n]
 return,outstat
 end

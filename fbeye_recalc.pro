@@ -18,7 +18,7 @@ lpeak = fltarr(nflare)
 ed = fltarr(nflare)
 fstartpos = fltarr(nflare)
 fstoppos = fltarr(nflare)
- 
+s2n = fltarr(nflare)
 
 FOR n=0L,nflare-1 DO BEGIN
    if fevent[n] eq 0 then continue
@@ -40,13 +40,16 @@ FOR n=0L,nflare-1 DO BEGIN
    trise[n] = tmpstat[1]-time[fstarttmp]
    tdecay[n] = time[fstoptmp]-tmpstat[1]
    lpeak[n] = tmpstat[2]
+   s2n[n] = tmpstat[3]
+   
 ENDFOR
 
 
 ; dont save tlastviewed or dtlast
 save,fevent,fstartpos,fstoppos,$
      tpeak,tstart,tstop,trise,tdecay,lpeak,ed,$
-     cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,filename=outfilename
+     cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,$
+     filename=outfilename
 
 return
 end
