@@ -14,17 +14,11 @@ compile_opt HIDDEN
 ; calcualte area under flare, and above surrounding LC
 if f0 eq f1 then begin
    print,'warning: flare starts/stops at same data point'
-   print,'         ...adding 1 data point.'
+   print,'         ...adding 1 data point to end.'
    f1 = f1+1
 endif
 
 ;-- use linear approximation for slope beneath flare from start/stop points
-;; ed = tsum([time[f0]*(24.*60.*60.),time[f1]]*(24.*60.*60.),[yflux[f0],yflux[f1]])
-
-;-- just integrate fractional flux units (more simple, but not great)
-;; ed = tsum(time[f0:f1]*86400d0, yflux[f0:f1])
-
-
 dur = (time[f1[0]] - time[f0[0]])[0]
 c1 = where(time ge time[f0[0]]-dur*0.75 and time lt time[f0[0]]-dur*0.1)
 if c1[0] eq -1 then c1 = where(abs(time-time[f0[0]]) lt .001)
@@ -45,11 +39,6 @@ std = stddev(flux[[c1,c2]]) / median(flux[[c1,c2]])
 s2n = ed / sqrt(ed + std)
 
 
-;; plot,time,flux,xrange=[time[f0[0]]-dur,time[f1[0]]+dur],/xsty,/ysty
-;; oplot,psym=6,symsize=4,thick=5, [median(time[c1]),median(time[c2])],[median(flux[c1]),median(flux[c2])]
-;; oplot,time,poly(time,fit)
-;; print,'ED ',ed
-;; stop
 
 ;-- find peak between start/stop index
 lpeak = max(flux[f0:f1], peak_ind, /nan)
