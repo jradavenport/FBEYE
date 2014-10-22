@@ -47,7 +47,7 @@ std = stddev( flux_n[[c1,c2]] )
 noise = std * dur * 86400d0
 ; this Signal to Noise ratio becomes poisson for large energy,
 ; or small stddev (local noise level)
-s2n = ed / sqrt(ed + noise)
+s2n = abs(ed / sqrt(ed + noise))
 
 
 
