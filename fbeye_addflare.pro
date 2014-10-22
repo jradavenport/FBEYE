@@ -15,7 +15,8 @@ compile_opt HIDDEN
 ; pass to routine that calculates stats on flares
 ; returns single array with these elements:
 ; [ed, tpeak, peak]
-tmpstat = FBEYE_FLARESTAT(time,flux,flux_sm,f0,f1)
+  tmpstat = FBEYE_FLARESTAT(time,flux,flux_sm,f0,f1, $
+                           tstart,tstop)
 
 ; automatically (simply) pick a flare type
 newtype = 1

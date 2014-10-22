@@ -33,7 +33,8 @@ FOR n=0L,nflare-1 DO BEGIN
    fstartpos[n] = fstarttmp
    fstoppos[n] = fstoptmp
 
-   tmpstat = FBEYE_FLARESTAT(time,flux, fsmooth, fstarttmp, fstoptmp)   
+   tmpstat = FBEYE_FLARESTAT(time,flux, fsmooth, fstarttmp, fstoptmp, $
+                             tstart,tstop)   
    
    ed[n] = tmpstat[0]
    tpeak[n] = tmpstat[1]

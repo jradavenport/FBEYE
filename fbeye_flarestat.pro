@@ -1,4 +1,4 @@
-function fbeye_flarestat,time,flux,flux_sm,f0,f1
+function fbeye_flarestat,time,flux,flux_sm,f0,f1, tstart,tstop
 ; calculate the important stats to populate the other fields
 ; - peak (time & flux)
 ; - equiv. duration
@@ -22,13 +22,48 @@ endif
 dur = (time[f1[0]] - time[f0[0]])[0]
 ;c1 = where(time ge time[f0[0]]-dur*0.75 and time lt time[f0[0]]-dur*0.1)
 c1 = where(time ge time[f0[0]]-dur*1.5 and time lt time[f0[0]])
-;-- remove overlap of neighbor flares
 if c1[0] eq -1 then c1 = where(abs(time-time[f0[0]]) lt .001)
+;-- remove overlap of neighbor flares
+xc1 = where(tstart lt time[f0[0]] and tstop ge min(time[c1]))
+if xc1[0] ne -1 then begin 
+   tr = [-1] ; to-remove index
+   ; then for each overlapping flare...
+   for k=0l,n_elements(xc1)-1 do begin
+      tr = [tr, where(time[c1] ge tstart[xc1[k]] and $
+                      time[c1] le tstop[xc1[k]])]
+   endfor
+   tr = tr[1:*]
+   tr = tr[sort(tr)]
+   tr = tr[uniq(tr)]
+   if n_elements(tr) eq n_elements(c1) then $
+      tr = tr[0:(n_elements(tr)-3)]
+   fbeye_remove, tr, c1
+endif
+
 
 
 c2 = where(time gt time[f1[0]] and time le time[f1[0]]+dur*1.5)
-
 if c2[0] eq -1 then c2 = where(abs(time-time[f1[0]]) lt .001)
+; do any flares start between this flare's start and the end of
+; the second continuum region?
+xc2 = where(tstart gt time[f0[0]] and tstart le max(time[c2]))
+if xc2[0] ne -1 then begin 
+   tr = [-1] ; to-remove index
+   ; then for each overlapping flare...
+   for k=0l,n_elements(xc2)-1 do begin
+      tr = [tr, where(time[c2] ge tstart[xc2[k]] and $
+                      time[c2] le tstop[xc2[k]])]
+   endfor
+   tr = tr[1:*]
+   tr = tr[sort(tr)]
+   tr = tr[uniq(tr)]
+   if n_elements(tr) eq n_elements(c2) then $
+      tr = tr[2:*]
+   fbeye_remove, tr, c2
+endif
+
+
+
 
 mf = median(flux[[c1,c2]])
 mt = median(time[[c1,c2]])
@@ -58,18 +93,16 @@ noise = std * dur * 86400d0
 ; or small stddev (local noise level)
 s2n = abs(ed / sqrt(ed + noise))
 
-loadct,39,/silent
-print,ed,std,s2n,status
-
-plot,time,flux,xrange=[time[min(c1)],time[max(c2)]],/xsty,/ysty
-oplot,time[f0:f1],flux[f0:f1],color=150
-oplot,time[c1],flux[c1],color=250
-oplot,time[c2],flux[c2],color=250
-oplot,time,poly(time-mt,fit)+mf,color=90
-
-
-stop
-
+;--- vis for sanity checking
+;; loadct,39,/silent
+;; print,ed,std,s2n,status
+;; plot,time,flux,xrange=[time[min(c1)],time[max(c2)]],/xsty,/ysty
+;; oplot,time[f0:f1],flux[f0:f1],color=150
+;; oplot,time[c1],flux[c1],color=250,psym=1
+;; oplot,time[c2],flux[c2],color=250,psym=1
+;; oplot,time,poly(time-mt,fit)+mf,color=90
+;; stop
+;---
 
 
 ;-- find peak between start/stop index
