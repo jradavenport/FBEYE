@@ -43,7 +43,7 @@ ed = TSUM(time[f0:f1]*86400d0, flux_n[f0:f1])
 
 
 ;-- compute the s2n
-std = stddev(flux[[c1,c2]]) / median(flux[[c1,c2]])
+std = stddev( flux_n[[c1,c2]] )
 noise = std * dur * 86400d0
 ; this Signal to Noise ratio becomes poisson for large energy,
 ; or small stddev (local noise level)
