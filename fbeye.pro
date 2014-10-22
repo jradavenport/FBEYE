@@ -56,6 +56,9 @@ device, retain = 2
 device, true_color = 2
 device, decomposed = 0
 
+VERSION = 'v1.1.6'
+print,"  You are currently running FBEYE "+VERSION
+
 
 if keyword_set(debug) then print,'Debug: 1'
 if not keyword_set(lightcurve) then begin
@@ -162,13 +165,11 @@ if keyword_set(debug) then print,'Debug: 4'
 
 tunit = 'days'
 
-print,'> Storing smooth lightcurve'
-print,' ...'
+print,'> Generating smooth lightcurve'
+print,' ... this can take a few moments.'
 fsmooth = softserve(time,flux)
 flux_sm = flux - fsmooth + median(flux)
 
-
-VERSION = 'v1.1.5'
 
 
 ; reprocess stuff if requested
@@ -766,7 +767,7 @@ wdelete,!D.WINDOW
 ; as a change of pace: save as a text file in the working directory
 
 
-theend: print,'> Writing output .fbeye file'
+theend: print,'> Writing output (.fbeye) file, please wait.'
 restore,lightcurve+'.out' ; read output file in one more time
 
 
