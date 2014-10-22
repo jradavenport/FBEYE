@@ -183,7 +183,7 @@ if keyword_set(recalculate) then begin
    if yn eq 'y' then FBEYE_RECALC,time,flux,fsmooth,lightcurve+'.out'
    if yn ne 'y' then print,'> Canceled'
    if yn eq 'y' then print,'  DONE! '
-   print,'> Have a nice day.'
+   print,'> '
    goto,theend
 ;   RETURN ;<<<< done with program
 endif
@@ -765,7 +765,10 @@ wdelete,!D.WINDOW
 ; if the user has flares selected, then save to an output file
 ; as a change of pace: save as a text file in the working directory
 
+
 theend: print,'> Writing output .fbeye file'
+restore,lightcurve+'.out' ; read output file in one more time
+
 
 xx0 = where(fstartpos gt 0)
 close,/all
