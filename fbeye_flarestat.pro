@@ -20,25 +20,34 @@ endif
 
 ;-- use linear approximation for slope beneath flare from start/stop points
 dur = (time[f1[0]] - time[f0[0]])[0]
-c1 = where(time ge time[f0[0]]-dur*0.75 and time lt time[f0[0]]-dur*0.1)
+;c1 = where(time ge time[f0[0]]-dur*0.75 and time lt time[f0[0]]-dur*0.1)
+c1 = where(time ge time[f0[0]]-dur*1.5 and time lt time[f0[0]])
+;-- remove overlap of neighbor flares
 if c1[0] eq -1 then c1 = where(abs(time-time[f0[0]]) lt .001)
 
-c2 = where(time gt time[f1[0]]+dur*0.25 and time le time[f1[0]]+dur)
+
+c2 = where(time gt time[f1[0]] and time le time[f1[0]]+dur*1.5)
+
 if c2[0] eq -1 then c2 = where(abs(time-time[f1[0]]) lt .001)
 
+mf = median(flux[[c1,c2]])
+mt = median(time[[c1,c2]])
+
 ;-- this is the brute-force (robust) linear fit, using medians
-slope = (median(flux[c1])-median(flux[c2])) / $
-        (median(time[c1])-median(time[c2]))
-inter = median(flux[c1])-slope*median(time[c1])
+slope = (median(flux[c1]-mf)-median(flux[c2]-mf)) / $
+        (median(time[c1]-mt)-median(time[c2]-mt))
+inter = median(flux[c1]-mf)-slope*median(time[c1]-mt)
 fit =[inter,slope]
 
-;-- now use a 2nd order polynomial
-fit2 = POLY_FIT( time[[c1,c2]], flux[[c1,c2]], 2, status=status)
+;-- now use a 2nd order polynomial,
+;   recenter to aid fit minimizer
+fit2 = POLY_FIT( time[[c1,c2]]-mt, $
+                 flux[[c1,c2]]-mf, 2, status=status,/double)
 ;-- if fit is OK, then use 2nd order (better for starspot subtraction)
 if status[0] eq 0 then fit = fit2
 
 
-flux_n = (flux - poly(time, fit)) / median(flux[[c1,c2]])
+flux_n = (flux - (poly(time-mt, fit)+mf)) / mf
 ed = TSUM(time[f0:f1]*86400d0, flux_n[f0:f1])
 
 
@@ -48,6 +57,18 @@ noise = std * dur * 86400d0
 ; this Signal to Noise ratio becomes poisson for large energy,
 ; or small stddev (local noise level)
 s2n = abs(ed / sqrt(ed + noise))
+
+loadct,39,/silent
+print,ed,std,s2n,status
+
+plot,time,flux,xrange=[time[min(c1)],time[max(c2)]],/xsty,/ysty
+oplot,time[f0:f1],flux[f0:f1],color=150
+oplot,time[c1],flux[c1],color=250
+oplot,time[c2],flux[c2],color=250
+oplot,time,poly(time-mt,fit)+mf,color=90
+
+
+stop
 
 
 
