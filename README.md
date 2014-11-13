@@ -17,4 +17,4 @@ Flares By Eye, an IDL suite for analyzing Kepler light curves and validating fla
 jrad@astro.washington.edu
 
 
-If you use this code, please cite our upcoming paper (Davenport et al 2014 ApJ Submitted)
+If you use this code, please cite our upcoming paper (Davenport et al 2014 ApJ Accepted)
