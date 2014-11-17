@@ -1,8 +1,7 @@
 function aflare,t,p
 ;
 ;  This is the Analytic Flare Model from the flare-morphology paper
-;  Please reference Davenport (2014, in prep)
-;    (citation will be updated)
+;  Please reference Davenport (2014) http://arxiv.org/abs/1411.3723
 ;
 ;  jrad@astro.washington.edu
 ;
