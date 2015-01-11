@@ -56,7 +56,7 @@ device, retain = 2
 device, true_color = 2
 device, decomposed = 0
 
-VERSION = 'v1.1.6'
+VERSION = 'v1.1.7'
 print,"  You are currently running FBEYE "+VERSION
 
 
