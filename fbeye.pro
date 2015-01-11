@@ -92,9 +92,20 @@ already_own = FILE_TEST(lightcurve+'.out',GET_MODE=out_per,/USER)
 if keyword_set(debug) then print, 'already_done = ',already_done
 if keyword_set(debug) then print, 'out_per=',out_per
 
-if already_done eq 1 then print,'> ['+lightcurve+'] output files already exist.'
-if already_done eq 1 then read,doover,prompt='> Use existing results (y/n)? [default: y]  '
-if doover eq 'n' then already_done=0
+
+if already_done eq 1 then $
+   print,'> ['+lightcurve+'] output files already exist.'
+
+if not keyword_set(auto) then begin
+   if already_done eq 1 then $
+      read,doover,prompt='> Use existing results (y/n)? [default: y]  '
+   if doover eq 'n' then $
+      already_done=0
+endif
+
+if already_done eq 1 and keyword_set(auto) then $
+   doover = 'y'
+   
 
 ; temp file 
 if already_done eq 1 then begin
@@ -180,10 +191,16 @@ flux_sm = flux - fsmooth + median(flux)
 if keyword_set(recalculate) then begin
    yn = 'n'
    print,'Flare recalculation requested. This cannot be undone!'
-   read,yn,prompt='>  Are you sure? (y/n) [default: n] '
+   if not keyword_set(auto) then begin
+      read,yn,prompt='>  Are you sure? (y/n) [default: n] '
+      if yn eq 'y' then print,'>  OKAY! '
+      if yn ne 'y' then print,'> Canceled'
+   endif
+   if keyword_set(auto) then $
+      yn = 'y'
+   
    if yn eq 'y' then FBEYE_RECALC,time,flux,fsmooth,lightcurve+'.out'
-   if yn ne 'y' then print,'> Canceled'
-   if yn eq 'y' then print,'  DONE! '
+
    print,'> '
    goto,theend
 ;   RETURN ;<<<< done with program
