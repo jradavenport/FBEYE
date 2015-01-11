@@ -35,31 +35,37 @@ if xc1[0] ne -1 then begin
    tr = tr[1:*]
    tr = tr[sort(tr)]
    tr = tr[uniq(tr)]
-   if n_elements(tr) eq n_elements(c1) then $
+   if n_elements(tr) eq n_elements(c1) and $
+      n_elements(tr) gt 2 then $
       tr = tr[0:(n_elements(tr)-3)]
-   fbeye_remove, tr, c1
+   if n_elements(tr) lt n_elements(c2) then $
+      fbeye_remove, tr, c1
 endif
 
 
-
+; define the continuum region after the flare
 c2 = where(time gt time[f1[0]] and time le time[f1[0]]+dur*1.5)
 if c2[0] eq -1 then c2 = where(abs(time-time[f1[0]]) lt .001)
 ; do any flares start between this flare's start and the end of
 ; the second continuum region?
-xc2 = where(tstart gt time[f0[0]] and tstart le max(time[c2]))
-if xc2[0] ne -1 then begin 
+xc2 = where(tstart gt time[f0[0]] and tstart le max(time[c2]) )
+if xc2[0] ne -1 then begin
    tr = [-1] ; to-remove index
    ; then for each overlapping flare...
    for k=0l,n_elements(xc2)-1 do begin
       tr = [tr, where(time[c2] ge tstart[xc2[k]] and $
-                      time[c2] le tstop[xc2[k]])]
+                      time[c2] le tstop[xc2[k]]) ]
    endfor
    tr = tr[1:*]
    tr = tr[sort(tr)]
    tr = tr[uniq(tr)]
-   if n_elements(tr) eq n_elements(c2) then $
-      tr = tr[2:*]
-   fbeye_remove, tr, c2
+   ; if to-remove is same size as continuum region
+   ;  AND larger than 2 points...
+   if n_elements(tr) eq n_elements(c2) and $ 
+      n_elements(tr) gt 2 then $
+         tr = tr[2:*]
+   if n_elements(tr) lt n_elements(c2) then $
+      fbeye_remove, tr, c2
 endif
 
 

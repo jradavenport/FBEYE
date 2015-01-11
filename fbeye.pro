@@ -198,7 +198,7 @@ if keyword_set(recalculate) then begin
    endif
    if keyword_set(auto) then $
       yn = 'y'
-   
+      
    if yn eq 'y' then FBEYE_RECALC,time,flux,fsmooth,lightcurve+'.out'
 
    print,'> '
