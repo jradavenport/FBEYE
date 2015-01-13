@@ -1,5 +1,6 @@
 pro fbeye,lightcurve,debug=debug,recalculate=recalculate,$
-          keyboard=keyboard,auto=auto,noauto=noauto
+          keyboard=keyboard,auto=auto,noauto=noauto,$
+          smooth=smooth,boxcar=boxcar
  
 ;-----------------
 ; Flares By EYE
@@ -178,7 +179,21 @@ tunit = 'days'
 
 print,'> Generating smooth lightcurve'
 print,' ... this can take a few moments.'
-fsmooth = softserve(time,flux)
+
+; the default smoothing perscription
+if not keyword_set(smooth) then $
+   smooth = 'softserve'
+
+; now smooth the light curve using the desired method
+if strtrim(strlowcase(smooth),2) eq 'softserve' then $
+   fsmooth = softserve(time,flux)
+
+if strtrim(strlowcase(smooth),2) eq 'boxcar' then begin
+   if not keyword_set(boxcar) then boxcar = 50
+   fsmooth = smooth(flux, boxcar, /edge)
+endif
+   
+   
 flux_sm = flux - fsmooth + median(flux)
 
 
@@ -527,9 +542,9 @@ if btn eq 98 then continue ; back to top of loop
 ; smooth
 if btn eq 66 then begin
    if smlock eq 0 then begin
-      flux = flux_sm;flux - softserve(time,flux) + median(flux)
+      flux = flux_sm ;flux - softserve(time,flux) + median(flux)
       tmp = 1
-      print,'> Using SOFTSERVE smoothing perscription...'
+      print,'> Smoothing the light curve...
       
    endif
    if smlock eq 1 then begin
