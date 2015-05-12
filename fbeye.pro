@@ -281,6 +281,11 @@ if time[1]-time[0] gt dt then dt = (time[1]-time[0]) * 10.
 t=time0 ; start time to view
 ;-- update if looked at previously
 if tlastviewed gt 0 then t = tlastviewed
+
+; boundary conditions for the time of the window
+if t lt time0 then t = time0
+if t gt maxtime then t = maxtime - dt
+
 yzm = [1.,1]
 smlock = 0
 fluxsv = flux
@@ -300,7 +305,12 @@ if yu[0] ne -1 and ylock ne 1 then begin
    yrng = FBEYE_REAL(yrng,mean(flux,/nan)-stddev(flux,/nan))
 endif
 
-if keyword_set(debug) then print,'Debug: yrange=',yrng
+if keyword_set(debug) then begin
+   print, 'Debug: t=',t
+   print, 'Debug: dt=',dt
+   print, 'Debug: yrange=',yrng
+endif
+
 
 
 plot,time,flux,/xstyle,/ystyle,xrange=[t,t+dt],$
@@ -544,7 +554,7 @@ if btn eq 66 then begin
    if smlock eq 0 then begin
       flux = flux_sm ;flux - softserve(time,flux) + median(flux)
       tmp = 1
-      print,'> Smoothing the light curve...
+      print,'> Smoothing the light curve...'
       
    endif
    if smlock eq 1 then begin
@@ -564,7 +574,7 @@ if btn eq 41 then begin
 ;   yzm=[1.,1.]
 endif 
 if t lt 0 then  t=0.
-if t ge max(time-min(time,/nan),/nan) then t = t-dt/2.
+if t ge maxtime then t = t-dt/2.
 
 ;control dt
 if btn eq 50 then begin
