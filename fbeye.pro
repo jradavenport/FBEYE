@@ -57,7 +57,7 @@ device, retain = 2
 device, true_color = 2
 device, decomposed = 0
 
-VERSION = 'v1.1.7'
+VERSION = 'v1.1.8'
 print,"  You are currently running FBEYE "+VERSION
 
 
@@ -268,7 +268,7 @@ window,0,xsize=1200,ysize=700,title='FBeye '+VERSION
 ;=========
 
 
-time0=min(time,/nan)
+time0 = min(time,/nan)
 maxtime=max(time,/nan)
 lock=0
 ylock = 0 ; lock to fix the yzoom
@@ -278,7 +278,7 @@ if dtlast gt 0 then dt = dtlast else begin
 endelse
 
 if time[1]-time[0] gt dt then dt = (time[1]-time[0]) * 10.
-t=0 ; start time to view
+t=time0 ; start time to view
 ;-- update if looked at previously
 if tlastviewed gt 0 then t = tlastviewed
 yzm = [1.,1]
@@ -294,7 +294,7 @@ device,cursor_standard = 22
 ERASE
 
 ;==== plot raw LC  in time bin =====
-yu = where(time-time0 gt t and time-time0 lt t+dt)
+yu = where(time gt t and time lt t+dt)
 if yu[0] ne -1 and ylock ne 1 then begin
    yrng = minmax(flux[yu],/nan) * yzm
    yrng = FBEYE_REAL(yrng,mean(flux,/nan)-stddev(flux,/nan))
@@ -303,14 +303,14 @@ endif
 if keyword_set(debug) then print,'Debug: yrange=',yrng
 
 
-plot,time-time0,flux,/xstyle,/ystyle,xrange=[t,t+dt],$
+plot,time,flux,/xstyle,/ystyle,xrange=[t,t+dt],$
      xtitle='Time ('+tunit[0]+')',$
      position=posgen(1,1,1,xsp=-.85),ytickn=replicate(' ',8),$
      psym=10,yrange=[ yrng ],/nodata;,ytitle='Flux'
 
 if keyword_set(error) then begin
    loadct,0,/silent
-   ploterror,time-time0,flux,error,/xstyle,/ystyle,xrange=[t,t+dt],xtitle='Time ('+tunit[0]+')', position=posgen(1,1,1,xsp=-.85),ytickn=replicate(' ',8),psym=10,yrange=[ yrng ],/noerase,/nohat,errcolor=65;,ytitle='Flux'
+   ploterror,time,flux,error,/xstyle,/ystyle,xrange=[t,t+dt],xtitle='Time ('+tunit[0]+')', position=posgen(1,1,1,xsp=-.85),ytickn=replicate(' ',8),psym=10,yrange=[ yrng ],/noerase,/nohat,errcolor=65;,ytitle='Flux'
    loadct,39,/silent
 endif
 
@@ -320,8 +320,8 @@ endif
 xx0 = where(fstartpos gt 0)
 
 if xx0[0] ne -1 then begin
-   ac = where((time[fstartpos[xx0]]-time0 ge t and time[fstartpos[xx0]]-time0 le t+dt and mltpk_num[xx0] eq 0) or $
-              (time[fstoppos[xx0]]-time0 ge t and time[fstoppos[xx0]]-time0 le t+dt and mltpk_num[xx0] eq 0))
+   ac = where((time[fstartpos[xx0]] ge t and time[fstartpos[xx0]] le t+dt and mltpk_num[xx0] eq 0) or $
+              (time[fstoppos[xx0]] ge t and time[fstoppos[xx0]] le t+dt and mltpk_num[xx0] eq 0))
 
    if ac[0] ne -1 then for n=0L,n_elements(ac)-1 do begin
       fclr = 20
@@ -341,34 +341,34 @@ if xx0[0] ne -1 then begin
       endif
 
 
-      if time[(fstoppos[xx0])[ac[n]]]-time0 le t+dt and $
-         time[(fstartpos[xx0])[ac[n]]]-time0 ge t then $
+      if time[(fstoppos[xx0])[ac[n]]] le t+dt and $
+         time[(fstartpos[xx0])[ac[n]]] ge t then $
             polyfill,[time[(fstartpos[xx0])[ac[n]]],time[(fstartpos[xx0])[ac[n]]],$
-                      time[(fstoppos[xx0])[ac[n]]],time[(fstoppos[xx0])[ac[n]]]]-time0,$
+                      time[(fstoppos[xx0])[ac[n]]],time[(fstoppos[xx0])[ac[n]]]],$
                      [yrng[0],yrng[1],yrng[1],yrng[0]],color=fclr
-      if time[(fstartpos[xx0])[ac[n]]]-time0 lt t then $
-         polyfill,[t+time0,t+time0,$
-                   time[(fstoppos[xx0])[ac[n]]],time[(fstoppos[xx0])[ac[n]]]]-time0,$
+      if time[(fstartpos[xx0])[ac[n]]] lt t then $
+         polyfill,[t,t,$
+                   time[(fstoppos[xx0])[ac[n]]],time[(fstoppos[xx0])[ac[n]]]],$
                   [yrng[0],yrng[1],yrng[1],yrng[0]],color=fclr
-      if time[(fstoppos[xx0])[ac[n]]]-time0 gt t+dt then $
+      if time[(fstoppos[xx0])[ac[n]]] gt t+dt then $
          polyfill,[time[(fstartpos[xx0])[ac[n]]],time[(fstartpos[xx0])[ac[n]]],$
-                   t+dt+time0,t+dt+time0]-time0,$
+                   t+dt,t+dt],$
                   [yrng[0],yrng[1],yrng[1],yrng[0]],color=fclr
       loadct,39,/silent
-      oplot,[time[(fstartpos[xx0])[ac[n]]],time[(fstartpos[xx0])[ac[n]]]]-time0,[yrng],color=60,linestyle=2,thick=.8
+      oplot,[time[(fstartpos[xx0])[ac[n]]],time[(fstartpos[xx0])[ac[n]]]],[yrng],color=60,linestyle=2,thick=.8
 
-      oplot,[time[(fstoppos[xx0])[ac[n]]],time[(fstoppos[xx0])[ac[n]]]]-time0,[yrng],color=250,linestyle=2,thick=.8
+      oplot,[time[(fstoppos[xx0])[ac[n]]],time[(fstoppos[xx0])[ac[n]]]],[yrng],color=250,linestyle=2,thick=.8
    endfor 
 endif
 
 ;=== oplot sub-peaks ===
 xx = where(mltpk_flg eq 1)
 if xx[0] ne -1 then for n=0L,n_elements(xx)-1 do $
-   oplot,[time[multpos[xx[n]]],time[multpos[xx[n]]]]-time0,[yrng],color=114,linestyle=2,thick=.8
+   oplot,[time[multpos[xx[n]]],time[multpos[xx[n]]]],[yrng],color=114,linestyle=2,thick=.8
 
 
 ;==== oplot LC again to put on top =====
-plot,time-time0,flux,/xstyle,/ystyle,xrange=[t,t+dt],xtitle='Time ('+tunit[0]+')', position=posgen(1,1,1,xsp=-.85),psym=10,yrange=[ yrng ],/noerase,title='FILE: '+lightcurve;,ytickn=replicate(' ',8),ytitle='Flux'
+plot,time,flux,/xstyle,/ystyle,xrange=[t,t+dt],xtitle='Time ('+tunit[0]+')', position=posgen(1,1,1,xsp=-.85),psym=10,yrange=[ yrng ],/noerase,title='FILE: '+lightcurve;,ytickn=replicate(' ',8),ytitle='Flux'
 
 xyouts,/norm,0.24,0.94,'Flux'
 
@@ -376,7 +376,7 @@ xyouts,/norm,0.24,0.94,'Flux'
 ; these will always update with latest version of the auto-finder, no
 ; matter if you re-use previous results or not.
 if pick[0] ne -1 then $
-   oplot,time[pick]-time0,flux[pick],psym=4,color=170,symsize=0.5,thick=1.5
+   oplot,time[pick],flux[pick],psym=4,color=170,symsize=0.5,thick=1.5
 
 
 ;==== plot a std dev bar on the side =====
@@ -389,7 +389,7 @@ if pick[0] ne -1 then $
 FBEYE_STDDISP,version,keynames          ; generate the normal GUI
 FBEYE_MSG,string(total(fstartpos gt 0),f='(I05)')+'  flares       '+$
           string(total(mltpk_flg gt 0),f='(I05)')+' sub-peaks     '+$
-          string(maxtime-time0,f='(F06.1)')+' '+tunit[0]+' of data '
+          string(maxtime,f='(F06.1)')+' '+tunit[0]+' of data '
 
 if ylock eq 1 then xyouts,.05,.7,'Y Zoom Lock ('+keynames[7]+')',/normal,color=212
 if smlock eq 1 then xyouts,.08,.77,'Smooth ('+keynames[3]+')',/normal,color=90
