@@ -15,7 +15,6 @@ FBEYE will work on any 3 column light curve that contains time,flux,error. Howev
 The repository also contains the [analytic flare model](aflare.pro) described in the paper. While FBEYE does not call this code directly, fitting this model to the flare candidate events can be useful for 1) validating the events, and 2) determining complex event structure. Future versions of FBEYE *may* feature this functionality built in.
 
 
-(C) 2011, 2012, 2013, 2014 James R. A. Davenport </br>
-jrad AT astro.washington.edu
+(C) 2011, 2012, 2013, 2014, 2015 James R. A. Davenport </br>
 
-If you use this code please cite our paper: [Davenport et al. 2014](http://arxiv.org/abs/1411.3723). Send questions or comments to J. Davenport.
+If you use this code please cite our paper: [Davenport et al. 2014](http://arxiv.org/abs/1411.3723). Send questions or comments to @jradavenport
