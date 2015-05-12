@@ -15,6 +15,7 @@ print,' Note: Setting /auto will disable interactive mode.'
 print,'       Setting /noauto will disable all auto-finding.'
 print,'       Setting /recalculate will use prev start/stop times '
 print,'         and recompute the Equiv. Durations, etc.'
+print,'         Note: requires the .out file, not .fbeye file!'
 print,'  '
 
 device, retain = 2
@@ -158,9 +159,10 @@ tstart= fltarr(n_elements(fevent))
 tstop= fltarr(n_elements(fevent)) 
 trise= fltarr(n_elements(fevent)) 
 tdecay= fltarr(n_elements(fevent)) 
-s2n = fltarr(n_elements(fevent)) 
+s2n = fltarr(n_elements(fevent))
+quies = fltarr(n_elements(fevent))
 
-   save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,filename=lightcurve+'.out'
+   save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,quies,filename=lightcurve+'.out'
 
 ;   spawn,'chmod 777 '+lightcurve+'.out'
 ;   if FILE_TEST(lightcurve) eq 0 then
@@ -240,7 +242,7 @@ if not keyword_set(noauto) then begin
             FBEYE_ADDFLARE,time,flux,flux_sm,pflarestart[n],pflarestop[n],$
                            fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,$
                            lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,$
-                           multpos,s2n,filename=lightcurve+'.out'
+                           multpos,s2n,quies,filename=lightcurve+'.out'
          ENDFOR
       ENDIF
    endif ; /already_done
@@ -526,7 +528,7 @@ if btn eq 99 then begin
    dtlast = dt
 ;   FBEYE_MSG,'Quit Selected. Have a nice day.'
    task = 1 ;this is how to quit
-   save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,tlastviewed,dtlast,s2n,filename=lightcurve+'.out'
+   save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,tlastviewed,dtlast,s2n,quies,filename=lightcurve+'.out'
    ;; save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,tlastviewed,dtlast,filename=lightcurve+'.sav'
 
    ;; spawn,'chmod 777 '+lightcurve+'.out'
@@ -648,7 +650,7 @@ if btn eq 20 then begin
 
 ;now add to flare library for this star, so gets plotted each time
 ;  & save the flare library for this star
-   FBEYE_ADDFLARE,time,flux,flux_sm,ind0,ind1,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,filename=lightcurve+'.out',noauto=noauto
+   FBEYE_ADDFLARE,time,flux,flux_sm,ind0,ind1,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,quies,filename=lightcurve+'.out',noauto=noauto
 
 ; refresh flare library - not a polite way to code this...
    restore,lightcurve+'.out'
@@ -662,7 +664,7 @@ if btn eq 21 then begin
    if f0 lt t then continue
    if f0 gt t+dt then continue
    ind = where(abs(time-min(time,/nan) -f0) eq min(abs(time-min(time,/nan) -f0),/nan))   
-   FBEYE_DELFLARE,ind[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,filename=lightcurve+'.out'
+   FBEYE_DELFLARE,ind[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,quies,filename=lightcurve+'.out'
 endif
 
 ; + MULT PEAK -----
@@ -687,7 +689,7 @@ if btn eq 70 then begin
 
 ;now add to flare library for this star, so gets plotted each time
 ;  & save the flare library for this star
-   FBEYE_ADDMULT,ind0[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,filename=lightcurve+'.out'
+   FBEYE_ADDMULT,ind0[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,quies,filename=lightcurve+'.out'
 ; refresh flare library - not a polite way to code this
    restore,lightcurve+'.out'
 endif
@@ -700,7 +702,7 @@ if btn eq 71 then begin
    if f0 lt t then continue
    if f0 gt t+dt then continue
    ind = where(abs(time-min(time,/nan) -f0) eq min(abs(time-min(time,/nan) -f0),/nan))
-   FBEYE_DELMULT,ind[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,filename=lightcurve+'.out'
+   FBEYE_DELMULT,ind[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,quies,filename=lightcurve+'.out'
 endif
 
 ;--- flare event info ----
@@ -796,7 +798,11 @@ if btn eq 30 then begin
    if f1 gt t+dt then continue
    ind = where(abs(time-min(time,/nan) -f1) eq min(abs(time-min(time,/nan) -f1),/nan))
    
-   FBEYE_TYPE,ind[0],tmpflg,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,filename=lightcurve+'.out'
+   FBEYE_TYPE,ind[0],tmpflg,$
+              fevent,fstartpos,fstoppos,$
+              tpeak,tstart,tstop,trise,tdecay,$
+              lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,$
+              tmltpk,lmltpk,multpos,s2n,quies,quies,filename=lightcurve+'.out'
 endif
 
 ;
@@ -823,7 +829,7 @@ printf,4,'#'
 printf,4,'# This output file was generated by FBEYE version '+VERSION
 printf,4,'# Created on '+systime()
 printf,4,"# The column names are: "
-printf,4,'# Event_ID, Start_INDX, Stop_INDX, t_peak, t_start, t_stop, t_rise, t_decay, Flux_peak, Equiv_Dur, S/N, CPLX_flg, MLTPK_flg, MLTPK_num, t_MLTPK, L_mltpk, MLTPK_INDX'
+printf,4,'# Event_ID, Start_INDX, Stop_INDX, t_peak, t_start, t_stop, t_rise, t_decay, Flux_peak, Equiv_Dur, S/N, CPLX_flg, MLTPK_flg, MLTPK_num, t_MLTPK, L_mltpk, MLTPK_INDX, quies'
 printf,4,'# where INDX is the index in the light curve file '+lightcurve
 printf,4,'# MLTPK is multiple peak stuff, probably ignore'
 printf,4,'# CPLX_flg is the complex flag:'
@@ -836,8 +842,8 @@ if xx0[0] gt -1 then begin
              tpeak[n],tstart[n],tstop[n],$
              trise[n],tdecay[n],lpeak[n],ed[n],s2n[n],$
              cplx_flg[n],mltpk_flg[n],mltpk_num[n],$
-             tmltpk[n],lmltpk[n],multpos[n],$
-             f='(i,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,"  ;")'
+             tmltpk[n],lmltpk[n],multpos[n],quies[n],$
+             f='(i,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,"  ;")'
    close,4
 endif
    ;print,'> OUTPUT being saved to local text file'

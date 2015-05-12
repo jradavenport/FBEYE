@@ -4,7 +4,7 @@ compile_opt defint32, strictarr, strictarrsubs
 compile_opt HIDDEN
 
 print,'> Using previous flare t_start and t_stop from '+outfilename
-restore,outfilename
+restore, outfilename
 
 print,'> Recalculating properties for ', $
       strtrim(string(n_elements(where(fevent gt 0))),2),' flare events...'
@@ -19,6 +19,7 @@ ed = fltarr(nflare)
 fstartpos = fltarr(nflare)
 fstoppos = fltarr(nflare)
 s2n = fltarr(nflare)
+quies = fltarr(nflare)
 
 FOR n=0L,nflare-1 DO BEGIN
    if fevent[n] eq 0 then continue
@@ -42,6 +43,7 @@ FOR n=0L,nflare-1 DO BEGIN
    tdecay[n] = time[fstoptmp]-tmpstat[1]
    lpeak[n] = tmpstat[2]
    s2n[n] = tmpstat[3]
+   quies[n] = tmpstat[4]
    
 ENDFOR
 
@@ -49,7 +51,7 @@ ENDFOR
 ; dont save tlastviewed or dtlast
 save,fevent,fstartpos,fstoppos,$
      tpeak,tstart,tstop,trise,tdecay,lpeak,ed,$
-     cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,$
+     cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,quies,$
      filename=outfilename
 
 return

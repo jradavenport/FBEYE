@@ -78,7 +78,7 @@ mt = median(time[[c1,c2]])
 slope = (median(flux[c1]-mf)-median(flux[c2]-mf)) / $
         (median(time[c1]-mt)-median(time[c2]-mt))
 inter = median(flux[c1]-mf)-slope*median(time[c1]-mt)
-fit =[inter,slope]
+fit = [inter,slope]
 
 ;-- now use a 2nd order polynomial,
 ;   recenter to aid fit minimizer
@@ -115,7 +115,10 @@ s2n = abs(ed / sqrt(ed + noise))
 lpeak = max(flux[f0:f1], peak_ind, /nan)
 tpeak = time[f0 + peak_ind]
 
+; add new parameter to save
+quies = mf
+
 ;-- return the answers
-outstat = [ed, tpeak, lpeak, s2n]
+outstat = [ed, tpeak, lpeak, s2n, quies]
 return,outstat
 end

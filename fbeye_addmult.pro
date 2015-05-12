@@ -1,4 +1,4 @@
-pro fbeye_addmult,f0,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,filename=filename
+pro fbeye_addmult,f0,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,quies,filename=filename
 
 compile_opt defint32, strictarr, strictarrsubs
 compile_opt HIDDEN
@@ -23,6 +23,7 @@ compile_opt HIDDEN
   lpeak=[lpeak,0]
   ed=[ed,0]
   s2n=[s2n,0]
+  quies=[quies,0]
 
   cplx_flg=[cplx_flg,2]
 ; activate complex flag for this flare event
@@ -36,7 +37,7 @@ compile_opt HIDDEN
   lmltpk=[lmltpk,0] ; the sub-peak luminosity
 
 ; save new structure
-save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,filename=filename
+save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,quies,filename=filename
 
 return
 end
