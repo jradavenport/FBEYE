@@ -112,7 +112,7 @@ s2n = abs(ed / sqrt(ed + noise))
 
 
 ;-- find peak between start/stop index
-lpeak = max(flux[f0:f1], peak_ind, /nan)
+lpeak = max(flux_n[f0:f1], peak_ind, /nan)
 tpeak = time[f0 + peak_ind]
 
 ; add new parameter to save
