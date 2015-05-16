@@ -802,7 +802,7 @@ if btn eq 30 then begin
               fevent,fstartpos,fstoppos,$
               tpeak,tstart,tstop,trise,tdecay,$
               lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,$
-              tmltpk,lmltpk,multpos,s2n,quies,quies,filename=lightcurve+'.out'
+              tmltpk,lmltpk,multpos,s2n,quies,filename=lightcurve+'.out'
 endif
 
 ;
