@@ -622,7 +622,7 @@ if btn eq 20 then begin
 
 
    if f0 gt t+dt then continue
-   ind0 = where(abs(time-min(time,/nan) -f0) eq min(abs(time-min(time,/nan) -f0),/nan))
+   ind0 = where(abs(time -f0) eq min(abs(time -f0),/nan))
    ind0 = ind0[0]
 
    if keyword_set(debug) then print,'f0=',f0
@@ -636,12 +636,13 @@ if btn eq 20 then begin
    if keyword_set(debug) then print,'f1=',f1
    
    oplot,[f1,f1],[-1d6,1d9],color=170,linestyle=1
-   ind1 = where(abs(time-min(time,/nan) -f1) eq min(abs(time-min(time,/nan) -f1),/nan))
+   ind1 = where(abs(time -f1) eq min(abs(time -f1),/nan))
    ind1 = ind1[0]
 
 ;error trap for both start/stop being different, but within same datum
 ; (important for long-cadence)
    if ind0 eq ind1 then begin
+      print,ind0,ind1
       if ind1 lt n_elements(time)-1 then ind1 = ind1+1 else $
          if ind0 gt 0 then ind0 = ind0-1
       print,'fix'
@@ -663,7 +664,7 @@ if btn eq 21 then begin
    CURSOR,f0,tmp,/down,/data
    if f0 lt t then continue
    if f0 gt t+dt then continue
-   ind = where(abs(time-min(time,/nan) -f0) eq min(abs(time-min(time,/nan) -f0),/nan))   
+   ind = where(abs(time -f0) eq min(abs(time -f0),/nan))   
    FBEYE_DELFLARE,ind[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,quies,filename=lightcurve+'.out'
 endif
 
@@ -685,7 +686,7 @@ if btn eq 70 then begin
 
    if f0 gt t+dt then continue
 
-   ind0 = where(abs(time-min(time,/nan) -f0) eq min(abs(time-min(time,/nan) -f0),/nan))
+   ind0 = where(abs(time -f0) eq min(abs(time -f0),/nan))
 
 ;now add to flare library for this star, so gets plotted each time
 ;  & save the flare library for this star
@@ -701,7 +702,7 @@ if btn eq 71 then begin
    CURSOR,f0,tmp,/down,/data
    if f0 lt t then continue
    if f0 gt t+dt then continue
-   ind = where(abs(time-min(time,/nan) -f0) eq min(abs(time-min(time,/nan) -f0),/nan))
+   ind = where(abs(time -f0) eq min(abs(time -f0),/nan))
    FBEYE_DELMULT,ind[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,quies,filename=lightcurve+'.out'
 endif
 
@@ -712,7 +713,7 @@ if btn eq 411 then begin
    CURSOR,f0,tmp,/down,/data
    if f0 lt t then continue
    if f0 gt t+dt then continue
-   ind = where(abs(time-min(time,/nan) -f0) eq min(abs(time-min(time,/nan) -f0),/nan))
+   ind = where(abs(time -f0) eq min(abs(time -f0),/nan))
    FBEYE_INFO,ind[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos
 endif
 
@@ -796,7 +797,7 @@ if btn eq 30 then begin
    
    if f1 lt t then continue
    if f1 gt t+dt then continue
-   ind = where(abs(time-min(time,/nan) -f1) eq min(abs(time-min(time,/nan) -f1),/nan))
+   ind = where(abs(time -f1) eq min(abs(time -f1),/nan))
    
    FBEYE_TYPE,ind[0],tmpflg,$
               fevent,fstartpos,fstoppos,$
