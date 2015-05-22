@@ -401,7 +401,7 @@ if pick[0] ne -1 then $
 FBEYE_STDDISP,version,keynames          ; generate the normal GUI
 FBEYE_MSG,string(total(fstartpos gt 0),f='(I05)')+'  flares       '+$
           string(total(mltpk_flg gt 0),f='(I05)')+' sub-peaks     '+$
-          string(maxtime,f='(F06.1)')+' '+tunit[0]+' of data '
+          string(maxtime-time0,f='(F06.1)')+' '+tunit[0]+' of data '
 
 if ylock eq 1 then xyouts,.05,.7,'Y Zoom Lock ('+keynames[7]+')',/normal,color=212
 if smlock eq 1 then xyouts,.08,.77,'Smooth ('+keynames[3]+')',/normal,color=90
