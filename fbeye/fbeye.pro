@@ -291,7 +291,8 @@ if tlastviewed gt 0 then t = tlastviewed
 if t lt time0 then t = time0
 if t gt maxtime then t = maxtime - dt
 
-yzm = [1.,1]
+yzm = [0., 1.]
+;; yzm = [1., 1.]
 smlock = 0
 fluxsv = flux
 
@@ -306,14 +307,26 @@ ERASE
 ;==== plot raw LC  in time bin =====
 yu = where(time gt t and time lt t+dt)
 if yu[0] ne -1 and ylock ne 1 then begin
-   yrng = minmax(flux[yu],/nan) * yzm
-   yrng = FBEYE_REAL(yrng,mean(flux,/nan)-stddev(flux,/nan))
+   if yzm[1] gt 0.99 then begin
+      yzm[1] = 1.
+      yrng = [min(flux[yu],/nan), max(flux[yu],/nan)]
+   endif
+
+   if yzm[1] le 0.99 then begin
+      yrng = FBEYE_PCENT( flux[yu], yzm[0], yzm[1] )
+   endif
+
+   ;--old
+   ;; yrng = [min(flux[yu],/nan), max(flux[yu],/nan)] * yzm
+   ; if range has bad value, use REAL to rectify it... poorly
+   ;; yrng = FBEYE_REAL(yrng, mean(flux,/nan)-stddev(flux,/nan))
 endif
 
 if keyword_set(debug) then begin
    print, 'Debug: t=',t
    print, 'Debug: dt=',dt
    print, 'Debug: yrange=',yrng
+   print, 'Debug: yzm=',yzm
 endif
 
 
@@ -594,13 +607,17 @@ endif
 
 ;control y zoom
 if btn eq 60 then begin
-   if ylock eq 0 then yzm = yzm*[1,((yrng[1]-yrng[0])*0.75+yrng[0])/yrng[1]]
-   if ylock eq 1 then ylock=0
+   if ylock eq 0 then $ ;yzm = yzm*[1,((yrng[1]-yrng[0])*0.75+yrng[0])/yrng[1]]
+      yzm = yzm * [1, 0.9]
+      if ylock eq 1 then ylock=0
 endif
 if btn eq 61 then begin
-   if ylock eq 0 then yzm = yzm*[1,((yrng[1]-yrng[0])*1.25+yrng[0])/yrng[1]]
+   if ylock eq 0 then $ ;yzm = yzm*[1,((yrng[1]-yrng[0])*1.25+yrng[0])/yrng[1]]
+      yzm = yzm * [1, 1.1]
    if ylock eq 1 then ylock=0
 endif
+
+; toggle the Y range lock
 if btn eq 62 then begin
    if ylock eq 0 then tmp=1
    if ylock eq 1 then tmp=0
