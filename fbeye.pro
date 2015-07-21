@@ -58,7 +58,7 @@ device, retain = 2
 device, true_color = 2
 device, decomposed = 0
 
-VERSION = 'v1.3.2'
+VERSION = 'v1.3.4'
 print,"  You are currently running FBEYE "+VERSION
 
 
@@ -541,8 +541,8 @@ if btn eq 99 then begin
 endif
 
 ; reset display
-if btn eq 98 then yzm=[1.,1.] ; reset y-zoom
-if btn eq 98 then begin ; re-ingest data from scratch
+if btn eq 98 then begin  ; re-ingest data from scratch
+   yzm=[1.,1.] ; reset y-zoom
    ;if keyword_set(error) then $
       readcol,lightcurve,/silent,f='(D,D,D)',time,flux,error
    ;if not keyword_set(error) then $
@@ -575,7 +575,7 @@ if btn eq 41 then begin
    t=t-dt/2.
 ;   yzm=[1.,1.]
 endif 
-if t lt 0 then  t=0.
+if t lt time0 then  t = time0-dt/2.
 if t ge maxtime then t = t-dt/2.
 
 ;control dt
