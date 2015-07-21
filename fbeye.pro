@@ -11,11 +11,14 @@ pro fbeye,lightcurve,debug=debug,recalculate=recalculate,$
 
 
 print,'> Welcome to FBeye...'
-print,' Note: Setting /auto will disable interactive mode.'
-print,'       Setting /noauto will disable all auto-finding.'
-print,'       Setting /recalculate will use prev start/stop times '
-print,'         and recompute the Equiv. Durations, etc.'
-print,'         Note: requires the .out file, not .fbeye file!'
+print,'    Setting /auto will disable the interactive GUI.'
+print,'    Setting /noauto will disable the auto-finding.'
+print,'    Setting /recalculate will use previous start/stop times '
+print,'       and recompute the Equiv. Durations, peaks, etc.'
+print,'         NOTE: requires the .out file, not .fbeye file!'
+print,"    Set smooth='boxcar' to use simple boxcar smoothing for the "
+print,"       auto-finding, and boxcar=# to adjust the window length."
+print,"    Setting /keyboard will enable they keyboard+mouse mode."
 print,'  '
 
 device, retain = 2
@@ -462,7 +465,7 @@ endif
  if keyboard eq 1 then begin
     kclk = ''
     xyouts,.15,.95,charsize=.8,'(K)EYBOARD',color=250,/norm
-    print,kclk,'enter keyboard input'
+    print,kclk,'> Enter keyboard input'
     kclk = get_kbrd()
 ;   read,kclk,prompt='>'
 
