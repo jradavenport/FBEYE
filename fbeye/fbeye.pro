@@ -93,7 +93,9 @@ if keyword_set(debug) then print,'Debug: 3'
 doover = 'y'
 ; LOOK FOR THE OUTPUT ALREADY EXISTING...
 already_done = FILE_TEST(lightcurve+'.out')
-already_own = FILE_TEST(lightcurve+'.out',GET_MODE=out_per,/USER)
+;%% REMOVE FOR GDL
+; already_own = FILE_TEST(lightcurve+'.out',GET_MODE=out_per,/USER)
+;%%
 if keyword_set(debug) then print, 'already_done = ',already_done
 if keyword_set(debug) then print, 'out_per=',out_per
 
@@ -169,7 +171,10 @@ quies = fltarr(n_elements(fevent))
 
 ;   spawn,'chmod 777 '+lightcurve+'.out'
 ;   if FILE_TEST(lightcurve) eq 0 then
-   FILE_CHMOD,lightcurve+'.out', '777'o
+
+   ;%% REMOVE FOR GDL
+   ;; FILE_CHMOD,lightcurve+'.out', '777'o
+   ;%%
 endif
 
 if keyword_set(debug) then print,'Debug: 4'
@@ -549,10 +554,14 @@ if btn eq 99 then begin
 
    ;; spawn,'chmod 777 '+lightcurve+'.out'
    ;; spawn,'chmod 777 '+lightcurve+'.sav'
-   already_own = FILE_TEST(lightcurve+'.out',GET_MODE=out_per,/USER)
-   if already_own eq 1 then $
-      FILE_CHMOD,lightcurve+'.out', '777'o
-   ;; FILE_CHMOD,lightcurve+'.sav', '777'
+
+   ;%% REMOVE FOR GDL
+   ;; already_own = FILE_TEST(lightcurve+'.out',GET_MODE=out_per,/USER)
+   ;; if already_own eq 1 then $
+   ;;    FILE_CHMOD,lightcurve+'.out', '777'o
+   ;%%
+   
+;; FILE_CHMOD,lightcurve+'.sav', '777'
 
 endif
 
@@ -869,8 +878,10 @@ if xx0[0] gt -1 then begin
 endif
    ;print,'> OUTPUT being saved to local text file'
 ;;    spawn,'chmod 777 '+lightcurve+'.fbeye'
-FILE_CHMOD,lightcurve+'.fbeye', '777'o
 
+;%% REMOVE FOR GDL
+;FILE_CHMOD,lightcurve+'.fbeye', '777'o
+;%%
 
 return
 end
