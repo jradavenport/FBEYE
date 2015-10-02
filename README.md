@@ -8,7 +8,15 @@ the work from multiple PhD thesis projects under the supervision
 of Prof. Suzanne L. Hawley. 
 
 
-**Note:** FBEYE requires the [library of general purpose routines](https://github.com/jradavenport/jradavenport_idl) from @jradavenport to run.
+**Note 1:** FBEYE requires the following IDL libraries to function:
+
+- [jradavenport library](https://github.com/jradavenport/jradavenport_idl)
+- [Coyote library](https://github.com/idl-coyote/coyote)
+- [IDLAstro library](https://github.com/wlandsman/IDLAstro)
+
+**Note 2:** FBEYE has been tested to work on IDL v7.0 - v8.4
+
+
 
 FBEYE will work on any 3 column light curve that contains time,flux,error. However, the success of flare identification is highly dependent on the [smoothing routine](../jradavenport_idl/softserve.pro), which may not be suitable at present for all sources. Therefore, if FBEYE returns too many erroneous flare candidates your light curve may need to be preprocessed.
 
