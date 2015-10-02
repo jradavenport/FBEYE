@@ -61,7 +61,7 @@ device, retain = 2
 device, true_color = 2
 device, decomposed = 0
 
-VERSION = 'v1.3.4'
+VERSION = 'v1.3.5'
 print,"  You are currently running FBEYE "+VERSION
 
 
@@ -356,15 +356,15 @@ if xx0[0] ne -1 then begin
       if cplx_flg[xx0[ac[n]]] eq 1 then fclr=50
       loadct,0,/silent
       if cplx_flg[xx0[ac[n]]] eq 2 then begin
-         cubehelix,/silent,rot=1,start=2
+         fbeye_cubehelix,/silent,rot=1,start=2
          fclr=65
       endif
       if cplx_flg[xx0[ac[n]]] eq 3 then begin
-         cubehelix,/silent,rot=1,start=3
+         fbeye_cubehelix,/silent,rot=1,start=3
          fclr=65
       endif
       if cplx_flg[xx0[ac[n]]] eq 4 then begin
-         cubehelix,/silent,rot=1,start=1
+         fbeye_cubehelix,/silent,rot=1,start=1
          fclr=65
       endif
 
@@ -745,11 +745,11 @@ if btn eq 30 then begin
 ;   polyfill,/normal,color=10,[.065,.2,.2,.065,.065],[.71,.71,.82,.82,.71]
    loadct,0,/silent
    polyfill,/normal,color=50,[.065,.2,.2,.065,.065],[.8,.8,.83,.83,.8]
-   cubehelix,/silent,rot=1,start=2
+   fbeye_cubehelix,/silent,rot=1,start=2
    polyfill,/normal,color=65,[.065,.2,.2,.065,.065],[.77,.77,.8,.8,.77]
-   cubehelix,/silent,rot=1,start=3
+   fbeye_cubehelix,/silent,rot=1,start=3
    polyfill,/normal,color=65,[.065,.2,.2,.065,.065],[.74,.74,.77,.77,.74]
-   cubehelix,/silent,rot=1,start=1
+   fbeye_cubehelix,/silent,rot=1,start=1
    polyfill,/normal,color=65,[.065,.2,.2,.065,.065],[.71,.71,.74,.74,.71]
    loadct,39,/silent
    xyouts,.08,.81,'Classical (1)',/normal,charsize=1.2
