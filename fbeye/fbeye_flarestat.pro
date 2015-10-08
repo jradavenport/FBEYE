@@ -39,13 +39,16 @@ if xc1[0] ne -1 then begin
       n_elements(tr) gt 2 then $
       tr = tr[0:(n_elements(tr)-3)]
    if n_elements(tr) lt n_elements(c2) then $
-      fbeye_remove, tr, c1
+      if tr[0] ne -1 then $
+         fbeye_remove, tr, c1
 endif
 
 
 ; define the continuum region after the flare
 c2 = where(time gt time[f1[0]] and time le time[f1[0]]+dur*1.5)
-if c2[0] eq -1 then c2 = where(abs(time-time[f1[0]]) lt .001)
+if c2[0] eq -1 then $
+   c2 = where(abs(time-time[f1[0]]) lt .001)
+
 ; do any flares start between this flare's start and the end of
 ; the second continuum region?
 xc2 = where(tstart gt time[f0[0]] and tstart le max(time[c2]) )
@@ -65,7 +68,8 @@ if xc2[0] ne -1 then begin
       n_elements(tr) gt 2 then $
          tr = tr[2:*]
    if n_elements(tr) lt n_elements(c2) then $
-      fbeye_remove, tr, c2
+      if tr[0] ne -1 then $
+         fbeye_remove, tr, c2
 endif
 
 

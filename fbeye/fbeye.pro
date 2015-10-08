@@ -82,10 +82,6 @@ if FILE_TEST(lightcurve) eq 0 then begin
    return
 endif
 print,''
-print,'> Reading the Lightcurve file: '+lightcurve
-
-;----- required to have an error column
-readcol,lightcurve,/silent,f='(D,D,D)',time,flux,error
 
 
 tlastviewed = -9d9 ; a time value that shouldn't exist
@@ -102,6 +98,11 @@ if keyword_set(apimport) then begin
    recalculate = 1              ; the output file needs to re-run to match FBEYE
    AUTO = 1                   ; do things automatically now
 endif
+
+print,'> Reading the Lightcurve file: '+lightcurve
+
+;----- required to have an error column
+readcol,lightcurve,/silent,f='(D,D,D)',time,flux,error
 
 
 ;1) 

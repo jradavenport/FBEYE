@@ -1,12 +1,32 @@
-pro fbeye_apimport, lightcurve
+pro fbeye_apimport, lightcurve_in
 
 compile_opt defint32, strictarr, strictarrsubs
 compile_opt HIDDEN
 
 print,'>> running FBEYE_APIMPORT'
 
-; read the columnated text file from "appaloosa"
 
+; if the appaloosa lightcurve has a .lc.gz extension, uncompress and
+; convert to .dat for FBEYE
+if strpos(lightcurve_in, '.lc.gz') ne -1 then begin
+   print,'>> Converting .lc.gz file to .dat'
+   spawn,'gunzip -k ' + lightcurve_in
+
+   readcol, strmid(lightcurve_in, 0, strpos(lightcurve_in, '.gz')), $
+            time, flux, error,f='(X, F, F, F)'
+   
+   forprint, textout=strmid(lightcurve_in, 0, strpos(lightcurve_in, '.lc.gz')) + '.dat',$
+             time, flux, error, /silent, f='(D, D, D)',/nocomment
+   
+   lightcurve = strmid(lightcurve_in, 0, strpos(lightcurve_in, '.lc.gz')) + '.dat'
+endif else begin
+   lightcurve = lightcurve_in
+endelse
+
+
+
+; read the columnated text file from "appaloosa"
+print,'>> Reading .flare file, converting to .out format'
 readcol, strmid(lightcurve, 0, strpos(lightcurve, '.dat')) + '.flare', $
          f='(F)', /silent, $
          tstart, tstop, tpeak, lpeak, $
@@ -44,6 +64,8 @@ save,fevent,fstartpos,fstoppos,$
      s2n,quies,tlastviewed,dtlast,$
      filename=outfilename
 
-print, '> Generating file '+outfilename
+print, '>> Generating file '+outfilename
+
+lightcurve_in = lightcurve
 return
 end
