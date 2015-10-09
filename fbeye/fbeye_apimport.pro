@@ -16,7 +16,7 @@ if strpos(lightcurve_in, '.lc.gz') ne -1 then begin
             time, flux, error,f='(X, F, F, F)'
    
    forprint, textout=strmid(lightcurve_in, 0, strpos(lightcurve_in, '.lc.gz')) + '.dat',$
-             time, flux, error, /silent, f='(D, D, D)',/nocomment
+             time, flux, error, /silent, f='(D20.10, D20.10, D20.10)',/nocomment
    
    lightcurve = strmid(lightcurve_in, 0, strpos(lightcurve_in, '.lc.gz')) + '.dat'
 endif else begin
