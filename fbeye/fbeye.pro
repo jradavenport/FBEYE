@@ -64,7 +64,7 @@ device, retain = 2
 device, true_color = 2
 device, decomposed = 0
 
-VERSION = 'v1.3.6'
+VERSION = 'v1.3.7'
 print,"  You are currently running FBEYE "+VERSION
 
 
@@ -363,11 +363,13 @@ endif
 
 ;==== plot start/stop times in time bin =====
 ;  only do lines within the plot range
-xx0 = where(fstartpos gt 0)
+xx0 = where(fstartpos ge 0)
 
 if xx0[0] ne -1 then begin
-   ac = where((time[fstartpos[xx0]] ge t and time[fstartpos[xx0]] le t+dt and mltpk_num[xx0] eq 0) or $
-              (time[fstoppos[xx0]] ge t and time[fstoppos[xx0]] le t+dt and mltpk_num[xx0] eq 0))
+   ;; ac = where((time[fstartpos[xx0]] ge t and time[fstartpos[xx0]] le t+dt and mltpk_num[xx0] eq 0) or $
+   ;;            (time[fstoppos[xx0]] ge t and time[fstoppos[xx0]] le t+dt and mltpk_num[xx0] eq 0))
+   ac = where((time[fstartpos[xx0]] ge t and time[fstartpos[xx0]] le t+dt) or $
+              (time[fstoppos[xx0]] ge t and time[fstoppos[xx0]] le t+dt))
 
    if ac[0] ne -1 then for n=0L,n_elements(ac)-1 do begin
       fclr = 20
@@ -876,7 +878,7 @@ printf,4,'#    1=classical, 2=complex, 3=weird, 4=maybe'
 printf,4,'# '
 
 if xx0[0] gt -1 then begin
-   for n=1L,n_elements(fevent)-1 do $
+   for n=0L,n_elements(fevent)-1 do $
       printf,4,fevent[n],fstartpos[n],fstoppos[n],$
              tpeak[n],tstart[n],tstop[n],$
              trise[n],tdecay[n],lpeak[n],ed[n],s2n[n],$

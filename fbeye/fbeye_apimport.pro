@@ -24,11 +24,10 @@ endif else begin
 endelse
 
 
-
 ; read the columnated text file from "appaloosa"
 print,'>> Reading .flare file, converting to .out format'
 readcol, strmid(lightcurve, 0, strpos(lightcurve, '.dat')) + '.flare', $
-         f='(F)', /silent, $
+         f='(D)', /silent, $
          tstart, tstop, tpeak, lpeak, $
          FWHM, duration, t_peak_aflare1, t_FWHM_aflare1, amplitude_aflare1, $
          flare_chisq, KS_d_model, KS_p_model, KS_d_cont, KS_p_cont, ed
@@ -37,14 +36,14 @@ readcol, strmid(lightcurve, 0, strpos(lightcurve, '.dat')) + '.flare', $
 trise = tpeak - tstart
 tdecay = tstop - tpeak
 
-fevent = findgen(n_elements(tstart))
+fevent = findgen(n_elements(tstart)) + 1
 fstartpos = fltarr(n_elements(tstart)) - 99.
 fstoppos = fltarr(n_elements(tstart)) - 99.
 
-cplx_flg = fltarr(n_elements(tstart)) * 0.
+cplx_flg = fltarr(n_elements(tstart)) * 0. + 1.
 
-mltpk_flg = fltarr(n_elements(tstart)) - 99.
-mltpk_num = fltarr(n_elements(tstart)) - 99.
+mltpk_flg = fltarr(n_elements(tstart))
+mltpk_num = fltarr(n_elements(tstart))
 tmltpk = fltarr(n_elements(tstart)) - 99.
 lmltpk = fltarr(n_elements(tstart)) - 99.
 multpos = fltarr(n_elements(tstart)) - 99.

@@ -9,8 +9,8 @@ restore, outfilename
 print,'> Recalculating properties for ', $
       strtrim(string(n_elements(where(fevent gt 0))),2),' flare events...'
 
-
 nflare = n_elements(tstart)
+
 tpeak = fltarr(nflare)
 trise = fltarr(nflare)
 tdecay = fltarr(nflare)
@@ -29,7 +29,8 @@ FOR n=0L,nflare-1 DO BEGIN
    fstoptmp = where(abs(time-tstop[n[0]]) eq $
                     min(abs(time-tstop[n[0]])))
 
-   if fstarttmp[0] eq fstoptmp[0] then fstoptmp = fstoptmp+1
+   if fstarttmp[0] eq fstoptmp[0] then $
+      fstoptmp = fstoptmp+1
    
    fstartpos[n] = fstarttmp
    fstoppos[n] = fstoptmp
@@ -53,6 +54,7 @@ save,fevent,fstartpos,fstoppos,$
      tpeak,tstart,tstop,trise,tdecay,lpeak,ed,$
      cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,quies,$
      filename=outfilename
+
 
 return
 end
