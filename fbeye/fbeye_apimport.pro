@@ -12,8 +12,13 @@ if strpos(lightcurve_in, '.lc.gz') ne -1 then begin
    print,'>> Converting .lc.gz file to .dat'
    spawn,'gunzip -k ' + lightcurve_in
 
+   ;-- for PDC flux
+   ;; readcol, strmid(lightcurve_in, 0, strpos(lightcurve_in, '.gz')), $
+   ;;          time, flux, error,f='(X, F, F, F)'
+
+   ;-- for SAP flux
    readcol, strmid(lightcurve_in, 0, strpos(lightcurve_in, '.gz')), $
-            time, flux, error,f='(X, F, F, F)'
+            time, flux, error,f='(X,D,X,X,X,X,F,F)'
    
    forprint, textout=strmid(lightcurve_in, 0, strpos(lightcurve_in, '.lc.gz')) + '.dat',$
              time, flux, error, /silent, f='(D20.10, D20.10, D20.10)',/nocomment
