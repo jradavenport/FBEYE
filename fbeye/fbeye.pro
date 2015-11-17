@@ -65,7 +65,7 @@ device, retain = 2
 device, true_color = 2
 device, decomposed = 0
 
-VERSION = 'v1.3.7'
+VERSION = 'v1.3.8'
 if not keyword_set(silent) then $
    print,"  You are currently running FBEYE "+VERSION
 
