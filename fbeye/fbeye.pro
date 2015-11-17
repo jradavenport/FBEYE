@@ -212,7 +212,7 @@ if strtrim(strlowcase(smooth),2) eq 'softserve' then $
 
 if strtrim(strlowcase(smooth),2) eq 'boxcar' then begin
    if not keyword_set(boxcar) then boxcar = 50
-   fsmooth = smooth(flux, boxcar, /edge)
+   fsmooth = smooth(flux, boxcar, /EDGE_TRUNCATE)
 endif
    
    
