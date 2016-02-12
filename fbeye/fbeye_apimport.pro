@@ -18,24 +18,51 @@ if strpos(lightcurve_in, '.lc.gz') ne -1 then begin
 
    ;-- for SAP flux
    readcol, strmid(lightcurve_in, 0, strpos(lightcurve_in, '.gz')), $
-            time, flux, error,f='(X,D,X,X,X,X,F,F)'
-   
-   forprint, textout=strmid(lightcurve_in, 0, strpos(lightcurve_in, '.lc.gz')) + '.dat',$
-             time, flux, error, /silent, f='(D20.10, D20.10, D20.10)',/nocomment
-   
-   lightcurve = strmid(lightcurve_in, 0, strpos(lightcurve_in, '.lc.gz')) + '.dat'
-endif else begin
-   lightcurve = lightcurve_in
-endelse
+            time, flux, error,f='(X,D,X,X,X,X,F,F)', /silent
 
+    lightcurve = strmid(lightcurve_in, 0, strpos(lightcurve_in, '.lc.gz')) + '.dat'
 
-; read the columnated text file from "appaloosa"
-print,'>> Reading .flare file, converting to .out format'
-readcol, strmid(lightcurve, 0, strpos(lightcurve, '.dat')) + '.flare', $
-         f='(D)', /silent, $
-         tstart, tstop, tpeak, lpeak, $
-         FWHM, duration, t_peak_aflare1, t_FWHM_aflare1, amplitude_aflare1, $
-         flare_chisq, KS_d_model, KS_p_model, KS_d_cont, KS_p_cont, ed
+    forprint, textout=lightcurve,$
+        time, flux, error, /silent, f='(D20.10, D20.10, D20.10)',/nocomment
+
+    ; read the columnated text file from "appaloosa"
+    print,'>> Reading .flare file, converting to .out format'
+    readcol, strmid(lightcurve, 0, strpos(lightcurve, '.dat')) + '.flare', $
+             f='(D)', /silent, $
+             tstart, tstop, tpeak, lpeak, $
+             FWHM, duration, t_peak_aflare1, t_FWHM_aflare1, amplitude_aflare1, $
+             flare_chisq, KS_d_model, KS_p_model, KS_d_cont, KS_p_cont, ed
+endif
+
+; if the appaloosa lightcurve has a .fits extension, open and extract columns,
+; convert to .dat for FBEYE
+if strpos(lightcurve_in, '.fits') ne -1 then begin
+    lc = mrdfits(lightcurve_in, 1, /silent)
+    lightcurve = strmid(lightcurve_in, 0, strpos(lightcurve_in, '.fits')) + '.dat'
+
+    time = lc.time
+    flux = real(lc.sap_flux, -99)
+    error = real(lc.sap_flux_err, -99)
+
+    if (where(flux eq -99))[0] ne -1 then $
+        remove, where(flux eq -99), time, flux, error
+
+    forprint, textout=lightcurve, time, flux, error, /silent, $
+        f='(D20.10, D20.10, D20.10)',/nocomment
+
+    ; read the columnated text file from "appaloosa"
+    print,'>> Reading .flare file, converting to .out format'
+    readcol, lightcurve_in + '.flare', $
+             f='(D)', /silent, $
+             tstart, tstop, tpeak, lpeak, $
+             FWHM, duration, t_peak_aflare1, t_FWHM_aflare1, amplitude_aflare1, $
+             flare_chisq, KS_d_model, KS_p_model, KS_d_cont, KS_p_cont, ed
+endif
+
+if strpos(lightcurve_in, '.fits') eq -1 and strpos(lightcurve_in, '.lc.gz') eq -1 then begin
+    print,'FBEYE_APIMPORT ERROR: Only .fits and .lc.gz file formats supported at this time.'
+    return
+endif
 
 
 trise = tpeak - tstart
@@ -70,6 +97,10 @@ save,fevent,fstartpos,fstoppos,$
 
 print, '>> Generating file '+outfilename
 
+print, '>> FBEYE_APIMPORT is complete. To use the results, do the following:'
+print, '   IDL> fbeye, "' + lightcurve + '" '
+
 lightcurve_in = lightcurve
+
 return
 end
