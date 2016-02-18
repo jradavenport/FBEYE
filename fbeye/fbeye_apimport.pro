@@ -25,13 +25,7 @@ if strpos(lightcurve_in, '.lc.gz') ne -1 then begin
     forprint, textout=lightcurve,$
         time, flux, error, /silent, f='(D20.10, D20.10, D20.10)',/nocomment
 
-    ; read the columnated text file from "appaloosa"
-    print,'>> Reading .flare file, converting to .out format'
-    readcol, strmid(lightcurve, 0, strpos(lightcurve, '.dat')) + '.flare', $
-             f='(D)', /silent, $
-             tstart, tstop, tpeak, lpeak, $
-             FWHM, duration, t_peak_aflare1, t_FWHM_aflare1, amplitude_aflare1, $
-             flare_chisq, KS_d_model, KS_p_model, KS_d_cont, KS_p_cont, ed
+    flare_file = strmid(lightcurve, 0, strpos(lightcurve, '.dat')) + '.flare'
 endif
 
 ; if the appaloosa lightcurve has a .fits extension, open and extract columns,
@@ -50,13 +44,8 @@ if strpos(lightcurve_in, '.fits') ne -1 then begin
     forprint, textout=lightcurve, time, flux, error, /silent, $
         f='(D20.10, D20.10, D20.10)',/nocomment
 
-    ; read the columnated text file from "appaloosa"
-    print,'>> Reading .flare file, converting to .out format'
-    readcol, lightcurve_in + '.flare', $
-             f='(D)', /silent, $
-             tstart, tstop, tpeak, lpeak, $
-             FWHM, duration, t_peak_aflare1, t_FWHM_aflare1, amplitude_aflare1, $
-             flare_chisq, KS_d_model, KS_p_model, KS_d_cont, KS_p_cont, ed
+    flare_file = lightcurve_in + '.flare'
+
 endif
 
 if strpos(lightcurve_in, '.fits') eq -1 and strpos(lightcurve_in, '.lc.gz') eq -1 then begin
@@ -64,11 +53,31 @@ if strpos(lightcurve_in, '.fits') eq -1 and strpos(lightcurve_in, '.lc.gz') eq -
     return
 endif
 
+if FILE_TEST(flare_file) eq 1 then begin
+    ; read the columnated text file from "appaloosa"
+    print,'>> Reading .flare file, converting to .out format.'
+    readcol, flare_file, $
+             f='(D)', /silent, $
+             tstart, tstop, tpeak, lpeak, $
+             FWHM, duration, t_peak_aflare1, t_FWHM_aflare1, amplitude_aflare1, $
+             flare_chisq, KS_d_model, KS_p_model, KS_d_cont, KS_p_cont, ed
+
+    ; create flare event ID's. Events with ID=0 are ignored, so start at 1
+    fevent = findgen(n_elements(tstart)) + 1
+endif else begin
+    print,'>> No .flare file found, creating a blank .out file.'
+
+    tstart = [-1]
+    tstop = [-1]
+    tpeak = [-1]
+
+    ; make a flare event to be ignored
+    fevent = [0]
+endelse
 
 trise = tpeak - tstart
 tdecay = tstop - tpeak
 
-fevent = findgen(n_elements(tstart)) + 1
 fstartpos = fltarr(n_elements(tstart)) - 99.
 fstoppos = fltarr(n_elements(tstart)) - 99.
 

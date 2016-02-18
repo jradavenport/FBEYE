@@ -99,12 +99,14 @@ dtlast = -9d9 ; a time bin that shouldn't exist
 
 ; read in the output from the Python project codename "appaloosa"
 if keyword_set(apimport) then begin
-   FBEYE_APIMPORT, lightcurve ; generates a new output save file
+    print,'> Running FBEYE_RECALC to create .dat and .out files'
+    FBEYE_APIMPORT, lightcurve ; generates a new output save file
 
-   print, '> FBEYE_RECALC will now run automatically to make the import complete.'
-   print, '  To use the results, rerun FBEYE without /apimport flag'
-   recalculate = 1 ; the output file needs to re-run to match FBEYE
-   AUTO = 1 ; do things automatically now
+    print, '> FBEYE_RECALC will now run automatically to make the import complete.'
+    print, '  This creates the .fbeye file.'
+    print, '  To use the results, rerun FBEYE without /apimport flag, and using the new .dat file'
+    recalculate = 1 ; the output file needs to re-run to match FBEYE
+    AUTO = 1 ; do things automatically now
 endif
 
 if not keyword_set(silent) then $
@@ -148,16 +150,11 @@ endif
 if already_done eq 0 then begin
    if not keyword_set(silent) then $
       print,''
-   finds={fstartpos:0d0,fstoppos:0d0,pstartpos:0d0,pstoppos:0d0}
 
-; now convert the output in a useful format for FBeye
-   fstartpos = finds.fstartpos
-   fstoppos = finds.fstoppos
-   pstartpos = finds.pstartpos
-   pstoppos = finds.pstoppos
-
-; now send these vectors into a jrad flare-characterizing program
-;---- to be written.... will fill-out lots of these #'s
+   fstartpos = 0d0
+   fstoppos = 0d0
+   pstartpos = 0d0
+   pstoppos = 0d0
 
 ;the vectors (quantities) we ultimately want are:
 ; flare event ID
@@ -192,7 +189,9 @@ if already_done eq 0 then begin
    s2n = fltarr(n_elements(fevent))
    quies = fltarr(n_elements(fevent))
 
-   save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,quies,filename=lightcurve+'.out'
+   save, fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay, $
+    lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n, $
+    quies,filename=lightcurve+'.out'
 
 ;   spawn,'chmod 777 '+lightcurve+'.out'
 ;   if FILE_TEST(lightcurve) eq 0 then

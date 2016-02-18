@@ -31,13 +31,13 @@ FOR n=0L,nflare-1 DO BEGIN
 
    if fstarttmp[0] eq fstoptmp[0] then $
       fstoptmp = fstoptmp+1
-   
+
    fstartpos[n] = fstarttmp
    fstoppos[n] = fstoptmp
 
    tmpstat = FBEYE_FLARESTAT(time,flux, fsmooth, fstarttmp, fstoptmp, $
-                             tstart,tstop)   
-   
+                             tstart,tstop)
+
    ed[n] = tmpstat[0]
    tpeak[n] = tmpstat[1]
    trise[n] = tmpstat[1]-time[fstarttmp]
@@ -45,7 +45,7 @@ FOR n=0L,nflare-1 DO BEGIN
    lpeak[n] = tmpstat[2]
    s2n[n] = tmpstat[3]
    quies[n] = tmpstat[4]
-   
+
 ENDFOR
 
 
