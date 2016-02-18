@@ -22,7 +22,7 @@ s2n = fltarr(nflare)
 quies = fltarr(nflare)
 
 FOR n=0L,nflare-1 DO BEGIN
-   if fevent[n] eq 0 then continue
+   if fevent[n] gt 0 then continue
 
    fstarttmp = where(abs(time-tstart[n[0]]) eq $
                      min(abs(time-tstart[n[0]])))

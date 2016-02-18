@@ -72,7 +72,7 @@ endif else begin
     tpeak = [-1]
 
     ; make a flare event to be ignored
-    fevent = [0]
+    fevent = [-1]
 endelse
 
 trise = tpeak - tstart

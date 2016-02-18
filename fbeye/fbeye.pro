@@ -127,7 +127,7 @@ if keyword_set(debug) then print, 'out_per=',out_per
 
 
 if already_done eq 1 and not keyword_set(auto) then $
-   print,'> ['+lightcurve+'] output files already exist.'
+   print,'> ['+lightcurve+'] .out file already exists.'
 
 if not keyword_set(auto) then begin
    if already_done eq 1 then $
@@ -151,8 +151,8 @@ if already_done eq 0 then begin
    if not keyword_set(silent) then $
       print,''
 
-   fstartpos = 0d0
-   fstoppos = 0d0
+   fstartpos = -99.
+   fstoppos = -99.
    pstartpos = 0d0
    pstoppos = 0d0
 
@@ -369,14 +369,18 @@ plot,time,flux,/xstyle,/ystyle,xrange=[t,t+dt],$
 
 if keyword_set(error) then begin
    loadct,0,/silent
-   ploterror,time,flux,error,/xstyle,/ystyle,xrange=[t,t+dt],xtitle='Time ('+tunit[0]+')', position=posgen(1,1,1,xsp=-.85),ytickn=replicate(' ',8),psym=10,yrange=[ yrng ],/noerase,/nohat,errcolor=65;,ytitle='Flux'
+   ploterror,time,flux,error,/xstyle,/ystyle,xrange=[t,t+dt],$
+        xtitle='Time ('+tunit[0]+')', position=posgen(1,1,1,xsp=-.85),$
+        ytickn=replicate(' ',8),psym=10,yrange=[ yrng ],$
+        /noerase,/nohat,errcolor=65;,ytitle='Flux'
    loadct,39,/silent
 endif
 
 
 ;==== plot start/stop times in time bin =====
-;  only do lines within the plot range
-xx0 = where(fstartpos ge 0)
+;  only show lines within the plot range
+;  and for valid "events" (fevent > 0)
+xx0 = where((fstartpos ge 0) and (fevent gt 0))
 
 if xx0[0] ne -1 then begin
    ;; ac = where((time[fstartpos[xx0]] ge t and time[fstartpos[xx0]] le t+dt and mltpk_num[xx0] eq 0) or $
@@ -513,31 +517,6 @@ endif
     xyouts,.15,.95,charsize=.8,'(K)EYBOARD',color=250,/norm
     print,kclk,'> Enter keyboard input'
     kclk = get_kbrd()
-;   read,kclk,prompt='>'
-
-    ; table of conditional inputs
-; f = add flare
-; d = delete flare
-; s = smooth
-; t = fwd time
-; r = bck time
-; i = info
-; q = quit
-
-    ;; if strlowcase(kclk) eq 'q' then btn = 99  ; quit
-    ;; if strlowcase(kclk) eq 'f' then btn = 20  ; add flare
-    ;; if strlowcase(kclk) eq 'd' then btn = 21  ; delete flare
-    ;; if strlowcase(kclk) eq 't' then btn = 40  ; forward time
-    ;; if strlowcase(kclk) eq 'r' then btn = 41  ; backward time
-    ;; if strlowcase(kclk) eq 'i' then btn = 411 ; info
-    ;; if strlowcase(kclk) eq 'y' then btn = 30  ; type
-    ;; if strlowcase(kclk) eq 's' then btn = 66  ; smooth
-    ;; if strlowcase(kclk) eq 'w' then btn = 51  ; time zoom in
-    ;; if strlowcase(kclk) eq 'e' then btn = 50  ; time zoom out
-    ;; if strlowcase(kclk) eq 'g' then btn = 61  ; y zoom in
-    ;; if strlowcase(kclk) eq 'b' then btn = 60  ; y zoom out
-    ;; if strlowcase(kclk) eq 'l' then btn = 62  ; y lock
-    ;; if strlowcase(kclk) eq '~' then btn = 98  ; reset
 
     if strlowcase(kclk) eq keynames[12] then btn = 99  ; quit
     if strlowcase(kclk) eq keynames[0] then btn = 20  ; add flare
@@ -642,12 +621,12 @@ endif
 ;control y zoom
 if btn eq 60 then begin
    if ylock eq 0 then $ ;yzm = yzm*[1,((yrng[1]-yrng[0])*0.75+yrng[0])/yrng[1]]
-      yzm = yzm * [1, 0.9]
+      yzm = yzm * [1, 0.7]
       if ylock eq 1 then ylock=0
 endif
 if btn eq 61 then begin
    if ylock eq 0 then $ ;yzm = yzm*[1,((yrng[1]-yrng[0])*1.25+yrng[0])/yrng[1]]
-      yzm = yzm * [1, 1.1]
+      yzm = yzm * [1, 1.3]
    if ylock eq 1 then ylock=0
 endif
 
@@ -674,8 +653,9 @@ if btn eq 20 then begin
    if lock eq 1 and f0 lt t then lock = 0
    if lock eq 0 and f0 lt t then continue
 
-
+   ; reject conditions:
    if f0 gt t+dt then continue
+
    ind0 = where(abs(time -f0) eq min(abs(time -f0),/nan))
    ind0 = ind0[0]
 
@@ -683,9 +663,13 @@ if btn eq 20 then begin
    oplot,[f0,f0],[-1d6,1d9],color=170,linestyle=1
    FBEYE_MSG,'+ FLARE selected    CLICK flare stop',250
    CURSOR,f1,tmp,/down,/data
-   if f1 eq f0 then continue
-   if f1 lt f0 then continue
-   if f1 gt t+dt then continue
+
+   ; reject conditions:
+   if f1 eq f0 then continue ; stop same as start
+   if f1 lt f0 then continue ; stop before start
+   if f1 gt t+dt then continue ; stop after window edge
+   if f1 lt t then continue ; stop before window edge
+   if f1 gt max(time) then continue ; if stop after end of data
 
    if keyword_set(debug) then print,'f1=',f1
 
@@ -716,9 +700,15 @@ if btn eq 21 then begin
    FBEYE_MSG,'- FLARE selected    CLICK within event',250
    device,cursor_standard = 88;36
    CURSOR,f0,tmp,/down,/data
-   if f0 lt t then continue
-   if f0 gt t+dt then continue
+
+   ; reject conditions:
+   if f0 lt t then continue ; before window start
+   if f0 lt min(time) then continue ; before data start
+   if f0 gt t+dt then continue ; after window end
+   if f0 gt max(time) then continue ; after data end
+
    ind = where(abs(time -f0) eq min(abs(time -f0),/nan))
+
    FBEYE_DELFLARE,ind[0],fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,quies,filename=lightcurve+'.out'
 endif
 
