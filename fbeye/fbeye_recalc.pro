@@ -7,7 +7,7 @@ print,'> Using previous flare t_start and t_stop from '+outfilename
 restore, outfilename
 
 print,'> Recalculating properties for ', $
-      strtrim(string(n_elements(where(fevent gt 0))),2),' flare events...'
+      strtrim(string(total(fevent gt 0),f='(I)'),2),' valid flare events...'
 
 nflare = n_elements(tstart)
 
@@ -22,7 +22,7 @@ s2n = fltarr(nflare)
 quies = fltarr(nflare)
 
 FOR n=0L,nflare-1 DO BEGIN
-   if fevent[n] gt 0 then continue
+   if fevent[n] le 0 then continue
 
    fstarttmp = where(abs(time-tstart[n[0]]) eq $
                      min(abs(time-tstart[n[0]])))
@@ -48,11 +48,11 @@ FOR n=0L,nflare-1 DO BEGIN
 
 ENDFOR
 
-
+cksum = 0
 ; dont save tlastviewed or dtlast
 save,fevent,fstartpos,fstoppos,$
      tpeak,tstart,tstop,trise,tdecay,lpeak,ed,$
-     cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,quies,$
+     cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,quies,cksum,$
      filename=outfilename
 
 

@@ -70,7 +70,7 @@ device, retain = 2
 device, true_color = 2
 device, decomposed = 0
 
-VERSION = 'v1.3.10'
+VERSION = 'v1.3.11'
 if not keyword_set(silent) then $
    print,"  You are currently running FBEYE "+VERSION
 
@@ -189,8 +189,9 @@ if already_done eq 0 then begin
    s2n = fltarr(n_elements(fevent))
    quies = fltarr(n_elements(fevent))
 
+   cksum = 123
    save, fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay, $
-    lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n, $
+    lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,s2n,cksum, $
     quies,filename=lightcurve+'.out'
 
 ;   spawn,'chmod 777 '+lightcurve+'.out'
@@ -557,7 +558,11 @@ if btn eq 99 then begin
    dtlast = dt
 ;   FBEYE_MSG,'Quit Selected. Have a nice day.'
    task = 1 ;this is how to quit
-   save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,tlastviewed,dtlast,s2n,quies,filename=lightcurve+'.out'
+   cksum = 995
+   save, fevent, fstartpos, fstoppos, tpeak, tstart, tstop, trise, tdecay, $
+        lpeak, ed, cplx_flg, mltpk_flg, mltpk_num, tmltpk, lmltpk, multpos, $
+        tlastviewed, dtlast, s2n, quies, cksum, $
+        filename=lightcurve+'.out'
    ;; save,fevent,fstartpos,fstoppos,tpeak,tstart,tstop,trise,tdecay,lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,tlastviewed,dtlast,filename=lightcurve+'.sav'
 
    ;; spawn,'chmod 777 '+lightcurve+'.out'
@@ -891,8 +896,9 @@ if xx0[0] gt -1 then begin
              cplx_flg[n],mltpk_flg[n],mltpk_num[n],$
              tmltpk[n],lmltpk[n],multpos[n],quies[n],$
              f='(i,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,"  ;")'
-   close,4
 endif
+close,4
+
    ;print,'> OUTPUT being saved to local text file'
 ;;    spawn,'chmod 777 '+lightcurve+'.fbeye'
 FILE_CHMOD,lightcurve+'.fbeye', '777'o

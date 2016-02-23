@@ -62,8 +62,9 @@ if FILE_TEST(flare_file) eq 1 then begin
              FWHM, duration, t_peak_aflare1, t_FWHM_aflare1, amplitude_aflare1, $
              flare_chisq, KS_d_model, KS_p_model, KS_d_cont, KS_p_cont, ed
 
-    ; create flare event ID's. Events with ID=0 are ignored, so start at 1
-    fevent = findgen(n_elements(tstart)) + 1
+    ; create flare event ID's. Events with ID=0 are ignored, so put an extra
+    ; event w/ ID=0 up front so arrays are always full
+    fevent = findgen(n_elements(tstart) + 1)
 endif else begin
     print,'>> No .flare file found, creating a blank .out file.'
 
@@ -72,7 +73,7 @@ endif else begin
     tpeak = [-1]
 
     ; make a flare event to be ignored
-    fevent = [-1]
+    fevent = [0]
 endelse
 
 trise = tpeak - tstart
@@ -96,12 +97,13 @@ dtlast = -9d9
 
 
 outfilename = lightcurve + ".out"
+cksum = 0
 
 ; make a save file
 save,fevent,fstartpos,fstoppos,$
      tpeak,tstart,tstop,trise,tdecay,lpeak,ed,$
      cplx_flg,mltpk_flg,mltpk_num,tmltpk,lmltpk,multpos,$
-     s2n,quies,tlastviewed,dtlast,$
+     s2n,quies,tlastviewed,dtlast,cksum,$
      filename=outfilename
 
 print, '>> Generating file '+outfilename

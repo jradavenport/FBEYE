@@ -4,7 +4,7 @@ pro FBEYE_ADDFLARE,time,flux,flux_sm,f0,f1,$
                    lpeak,ed,cplx_flg,mltpk_flg,mltpk_num,$
                    tmltpk,lmltpk,multpos,s2n,quies,$
                    filename=filename,noauto=noauto
-  
+
 compile_opt defint32, strictarr, strictarrsubs
 compile_opt HIDDEN
 
