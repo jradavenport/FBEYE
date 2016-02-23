@@ -56,15 +56,19 @@ endif
 if FILE_TEST(flare_file) eq 1 then begin
     ; read the columnated text file from "appaloosa"
     print,'>> Reading .flare file, converting to .out format.'
-    readcol, flare_file, $
-             f='(D)', /silent, $
-             tstart, tstop, tpeak, lpeak, $
-             FWHM, duration, t_peak_aflare1, t_FWHM_aflare1, amplitude_aflare1, $
-             flare_chisq, KS_d_model, KS_p_model, KS_d_cont, KS_p_cont, ed
+    readcol, flare_file, f='(D)', /silent, $
+            tstart_0, tstop_0, tpeak_0
+            ;; ignore other columns, not needed! ##
+            ;  tstart, tstop, tpeak, lpeak, $
+            ;  FWHM, duration, t_peak_aflare1, t_FWHM_aflare1, amplitude_aflare1, $
+            ;  flare_chisq, KS_d_model, KS_p_model, KS_d_cont, KS_p_cont, ed
 
     ; create flare event ID's. Events with ID=0 are ignored, so put an extra
     ; event w/ ID=0 up front so arrays are always full
-    fevent = findgen(n_elements(tstart) + 1)
+    fevent = findgen(n_elements(tstart_0) + 1)
+    tstart = [-1, tstart_0]
+    tstop = [-1, tstop_0]
+    tpeak = [-1, tpeak_0]
 endif else begin
     print,'>> No .flare file found, creating a blank .out file.'
 
