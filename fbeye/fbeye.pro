@@ -70,7 +70,7 @@ device, retain = 2
 device, true_color = 2
 device, decomposed = 0
 
-VERSION = 'v1.3.11'
+VERSION = 'v1.3.12'
 if not keyword_set(silent) then $
    print,"  You are currently running FBEYE "+VERSION
 
@@ -327,6 +327,7 @@ yzm = [0., 1.]
 ;; yzm = [1., 1.]
 smlock = 0
 fluxsv = flux
+yrng = [0., 1.]
 
 task = 0 ;  not complete================================================
 while task eq 0 do begin
